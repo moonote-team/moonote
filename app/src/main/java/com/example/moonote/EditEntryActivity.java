@@ -87,7 +87,7 @@ public class EditEntryActivity extends AppCompatActivity {
             Log.i("ENTRY", String.format("text: %s, epoch, %d", entry.getBody(), entry.getDate()));
         }
         Log.i("SAVING", "SAVING ENTRY");
-
-
+        EntryFragment.addItem(thisEntry);
+        finish();
     }
 }

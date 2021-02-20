@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import com.example.moonote.Journal.Entry;
 import com.example.moonote.dummy.DummyContent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +29,8 @@ public class EntryFragment extends Fragment {
     private int mColumnCount = 1;
 
     private static RecyclerView recyclerView;
+
+    private static List<Entry> mItems;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -50,6 +53,8 @@ public class EntryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mItems = new ArrayList<>();
+
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -71,10 +76,19 @@ public class EntryFragment extends Fragment {
             }
             //recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(DummyContent.ITEMS));
         }
+
+        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems));
+
         return view;
     }
 
     public static void setAdapter(List<Entry> items) {
-        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(items));
+        mItems = items;
+        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems));
+    }
+
+    public static void addItem(Entry entry) {
+        mItems.add(entry);
+        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems));
     }
 }

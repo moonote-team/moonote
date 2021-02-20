@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.Toast;
 
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         entryManager = new EntryManager(this);
+        entries = (EntryFragment) getSupportFragmentManager().findFragmentById(R.id.entries);
 
         CalendarView calendarView = findViewById(R.id.calendarView);
 
@@ -104,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
         List<Entry> results = entryManager.runQuery("SELECT * FROM ENTRY WHERE " +
                 DatabaseHelper.Entry.DATE + " BETWEEN " + epochStart + " AND " + epochEnd);
 
-        entries = (EntryFragment) getSupportFragmentManager().findFragmentById(R.id.entries);
         entries.setAdapter(results);
     }
 }

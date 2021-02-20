@@ -41,7 +41,7 @@ public class EntryManager
             {
                 Entry entry = new Entry(
                         cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
-                        (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE)
+                        (long) cursor.getLong(cursor.getColumnIndex(DatabaseHelper.Entry.DATE))
                 );
                 entries.add(entry);
                 cursor.moveToNext();
@@ -64,7 +64,7 @@ public class EntryManager
             {
                 Entry entry = new Entry(
                         cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
-                        (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE)
+                        (long) cursor.getLong(cursor.getColumnIndex(DatabaseHelper.Entry.DATE))
                 );
                 entries.add(entry);
                 cursor.moveToNext();
@@ -79,7 +79,7 @@ public class EntryManager
     {
         ContentValues newEntry = new ContentValues();
         newEntry.put(DatabaseHelper.Entry.BODY, entry.getBody());
-        newEntry.put(DatabaseHelper.Entry.DATE, entry.getDate().toString());
+        newEntry.put(DatabaseHelper.Entry.DATE, entry.getDate());
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
         database.insert(DatabaseHelper.Entry.TABLE_NAME, null, newEntry);
@@ -89,7 +89,7 @@ public class EntryManager
     {
         ContentValues updateEntry = new ContentValues();
         updateEntry.put(DatabaseHelper.Entry.BODY, entry.getBody());
-        updateEntry.put(DatabaseHelper.Entry.DATE, entry.getDate().toString());
+        updateEntry.put(DatabaseHelper.Entry.DATE, entry.getDate());
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
 
