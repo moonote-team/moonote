@@ -71,9 +71,14 @@ public class EditEntryActivity extends AppCompatActivity {
         if (entry != null) {
             journalText.setText(entry.getBody());
         }
+        // call this in OnCreate()
+        //get given relevant info for the sql query
+//        String formattedText;
+//        Spanned text = Html.fromHtml(formattedText);
+//        journalText.setText(text);
     }
 
-    private void saveEntry(EntryManager manager) {
+    private void saveEntry() {
 //        https://stackoverflow.com/questions/18056814/how-can-i-capture-the-formatting-of-my-edittext-text-so-that-bold-words-show-as
         Time currentTime = new Time(Calendar.getInstance().getTime().getTime());
         String plainText = journalText.getText().toString();
@@ -90,6 +95,7 @@ public class EditEntryActivity extends AppCompatActivity {
             manager.updateItem(entry);
             Log.i("UPDATING ENTRY ENTRY", String.format("New Entry value: entryID: %d, text: %s, epoch, %d", entry.get_id(), entry.getBody(), entry.getDate()));
         }
+        Log.i("SAVING", "SAVING ENTRY");
 
 
     }

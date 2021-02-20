@@ -15,23 +15,53 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.moonote.Journal.Entry;
 import com.example.moonote.domain.DatabaseHelper;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class EntryManager {
+public class EntryManager
+{
     private DatabaseHelper databaseHelper;
 
-    public EntryManager(Context context) {
+    public EntryManager(Context context)
+    {
         databaseHelper = DatabaseHelper.getInstance(context);
     }
 
-    public List<Entry> getAllEntries() {
+    public List<Entry> runQuery(String query)
+    {
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+        Cursor cursor = database.rawQuery(query, null);
+        List<Entry> entries = new ArrayList<>();
+
+        if (cursor.moveToFirst())
+        {
+            while (!cursor.isAfterLast())
+            {
+                Entry entry = new Entry(
+                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
+                        (long) cursor.getLong(cursor.getColumnIndex(DatabaseHelper.Entry.DATE))
+                );
+                entries.add(entry);
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
+        return entries;
+    }
+
+    public List<Entry> getAllEntries()
+    {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery("SELECT * FROM " + DatabaseHelper.Entry.TABLE_NAME, null);
         List<Entry> entries = new ArrayList<>();
 
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
+        if (cursor.moveToFirst())
+        {
+            while (!cursor.isAfterLast())
+            {
                 Entry entry = new Entry(
                         cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
                         (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE)
@@ -45,41 +75,41 @@ public class EntryManager {
         return entries;
     }
 
-    public void addEntry(Entry entry) {
+    public void addEntry(Entry entry)
+    {
         ContentValues newEntry = new ContentValues();
         newEntry.put(DatabaseHelper.Entry.BODY, entry.getBody());
-        newEntry.put(DatabaseHelper.Entry.DATE, entry.getDate().toString());
-        newEntry.put(DatabaseHelper.Entry.ID, entry.get_id().toString());
+        newEntry.put(DatabaseHelper.Entry.DATE, entry.getDate());
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
         database.insert(DatabaseHelper.Entry.TABLE_NAME, null, newEntry);
     }
 
-    public void updateItem(Entry entry) {
+    public void updateItem(Entry entry)
+    {
         ContentValues updateEntry = new ContentValues();
         updateEntry.put(DatabaseHelper.Entry.BODY, entry.getBody());
-        updateEntry.put(DatabaseHelper.Entry.DATE, entry.getDate().toString());
-        updateEntry.put(DatabaseHelper.Entry.ID, entry.get_id().toString());
-
+        updateEntry.put(DatabaseHelper.Entry.DATE, entry.getDate());
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
 
-        String[] args = new String[]{
+        String[] args = new String[] {
                 String.valueOf(entry.get_id())
         };
 
         database.update(DatabaseHelper.Entry.TABLE_NAME, updateEntry, DatabaseHelper.Entry.ID + "=?", args);
     }
 
-    public Entry getEntryByID(long id) {
+    public Entry getEntryByID(int id)
+    {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery("SELECT * FROM " + DatabaseHelper.Entry.TABLE_NAME + " WHERE " + DatabaseHelper.Entry.ID + " = " + id, null);
 
         Entry entry = null;
 
-        if (cursor.moveToFirst()) {
+        if (cursor.moveToFirst())
+        {
             entry = new Entry(
-                    (long) cursor.getColumnIndex(DatabaseHelper.Entry.ID),
                     cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
                     (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE)
             );
