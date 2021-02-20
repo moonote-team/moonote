@@ -107,4 +107,8 @@ public class EntryManager {
         cursor.close();
         return entry;
     }
+
+    public void deleteEntry(int id) {
+
+    }
 }

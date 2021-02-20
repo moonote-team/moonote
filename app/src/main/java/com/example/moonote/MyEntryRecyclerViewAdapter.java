@@ -1,5 +1,6 @@
 package com.example.moonote;
 
+import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moonote.Journal.Entry;
 import com.example.moonote.dummy.DummyContent.DummyItem;
+import com.example.moonote.middleware.EntryManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -60,6 +62,22 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
         holder.btnDelete.setOnClickListener(view -> {
             // Pop up saying are you sure?????
             // Do the deletion if user selects yes
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            builder.setMessage("Are you sure you want to delete?");
+            builder.setNegativeButton("Yeah", (dialogInterface, i) ->
+            {
+                // delete entry
+                EntryManager entryManager = new EntryManager(view.getContext());
+                entryManager.deleteEntry(mValues.get(position).get_id());
+            });
+            builder.setPositiveButton("Nah", (dialogInterface, i) ->
+            {
+                // exit dialog here
+                dialogInterface.dismiss();
+            });
+            builder.create().show();
+
         });
     }
 
