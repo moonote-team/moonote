@@ -7,9 +7,6 @@
 
 package com.example.moonote.Journal;
 
-import java.util.Date;
-import java.sql.Time;
-
 public class Entry
 {
     private int _id;

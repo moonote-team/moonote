@@ -15,7 +15,6 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.moonote.Journal.Entry;
 import com.example.moonote.middleware.EntryManager;
 
-import java.sql.Time;
 import java.util.Calendar;
 import java.util.List;
 
@@ -45,15 +44,16 @@ public class EditEntryActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_save:
-                Log.i("MENU ITEM", "ACTION BUTTON");
-                Toast.makeText(this, "RUNNING SAVE", Toast.LENGTH_SHORT).show();
-                saveEntry();
-                return true;
-            case R.id.action_settings:
-                return true;
+        int id = item.getItemId();
+        if (id == R.id.action_save) {
+            Log.i("MENU ITEM", "ACTION BUTTON");
+            Toast.makeText(this, "RUNNING SAVE", Toast.LENGTH_SHORT).show();
+            saveEntry();
+            return true;
         }
+        else if (id == R.id.action_settings)
+            return true;
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -61,7 +61,7 @@ public class EditEntryActivity extends AppCompatActivity {
         // Just testing on the first entry that exists
         List<Entry> entries = entryManager.getAllEntries();
         if (entries.isEmpty()) {
-            return;
+            // return;
         } else {
             //PLACEHOLDER
             Entry entry = entries.get(0);
