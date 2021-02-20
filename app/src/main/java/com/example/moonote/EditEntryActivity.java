@@ -60,6 +60,7 @@ public class EditEntryActivity extends AppCompatActivity {
                 Log.i("MENU ITEM", "ACTION BUTTON");
                 Toast.makeText(this, "RUNNING SAVE", Toast.LENGTH_SHORT).show();
                 saveEntry(entryManager);
+                finish();
                 return true;
             case R.id.action_settings:
                 return true;
