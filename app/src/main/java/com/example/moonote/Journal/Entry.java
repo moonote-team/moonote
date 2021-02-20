@@ -7,42 +7,45 @@
 
 package com.example.moonote.Journal;
 
+import java.util.Date;
 import java.sql.Time;
 
 public class Entry
 {
-    private String description;
-    private Time time;
+    private int _id;
+    private String body;
+    private Long date;
+    private double sentiment;
+    private double latitude, longitude;
 
     public Entry()
     {
-        description = "";
-        time = null;
+        _id = 0;
+        body = "";
+        date = 0L;
+        sentiment = 0.0;
+        latitude = 0.0;
+        longitude = 0.0;
     }
 
-    public Entry(String description, Time time)
+    public Entry(String body, Long date)
     {
-        this.description = description;
-        this.time = time;
+        this.body = body;
+        this.date = date;
     }
 
-    public String getDescription()
+    public int get_id()
     {
-        return description;
+        return _id;
     }
 
-    public void setDescription(String description)
+    public String getBody()
     {
-        this.description = description;
+        return body;
     }
 
-    public Time getTime()
+    public Long getDate()
     {
-        return time;
-    }
-
-    public void setTime(Time time)
-    {
-        this.time = time;
+        return date;
     }
 }

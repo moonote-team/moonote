@@ -17,6 +17,7 @@ import com.example.moonote.domain.DatabaseHelper;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class EntryManager
@@ -31,7 +32,7 @@ public class EntryManager
     public List<Entry> getEntries()
     {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
-        Cursor cursor = database.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_NAME, null);
+        Cursor cursor = database.rawQuery("SELECT * FROM " + DatabaseHelper.Entry.TABLE_NAME, null);
         List<Entry> entries = new ArrayList<>();
 
         if (cursor.moveToFirst())
@@ -39,8 +40,8 @@ public class EntryManager
             while (cursor.isAfterLast())
             {
                 Entry entry = new Entry(
-                    cursor.getString(cursor.getColumnIndex(DatabaseHelper.DESCRIPTION)),
-                    Time.valueOf(cursor.getString(cursor.getColumnIndex(DatabaseHelper.TIME)))
+                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
+                        (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE)
                 );
                 entries.add(entry);
                 cursor.moveToNext();
@@ -54,25 +55,25 @@ public class EntryManager
     public void addEntry(Entry entry)
     {
         ContentValues newEntry = new ContentValues();
-        newEntry.put(DatabaseHelper.DESCRIPTION, entry.getDescription());
-        newEntry.put(DatabaseHelper.TIME, entry.getTime().toString());
+        newEntry.put(DatabaseHelper.Entry.BODY, entry.getBody());
+        newEntry.put(DatabaseHelper.Entry.DATE, entry.getDate().toString());
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
-        database.insert(DatabaseHelper.TABLE_NAME, null, newEntry);
+        database.insert(DatabaseHelper.Entry.TABLE_NAME, null, newEntry);
     }
 
     public void updateItem(Entry entry)
     {
         ContentValues updateEntry = new ContentValues();
-        updateEntry.put(DatabaseHelper.DESCRIPTION, entry.getDescription());
-        updateEntry.put(DatabaseHelper.TIME, entry.getTime().toString());
+        updateEntry.put(DatabaseHelper.Entry.BODY, entry.getBody());
+        updateEntry.put(DatabaseHelper.Entry.DATE, entry.getDate().toString());
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
 
         String[] args = new String[] {
-                String.valueOf(entry.getTime())
+                String.valueOf(entry.get_id())
         };
 
-        // update here
+        database.update(DatabaseHelper.Entry.TABLE_NAME, updateEntry, DatabaseHelper.Entry.ID + "=?", args);
     }
 }
