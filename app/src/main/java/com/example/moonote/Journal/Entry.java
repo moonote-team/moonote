@@ -7,17 +7,15 @@
 
 package com.example.moonote.Journal;
 
-public class Entry
-{
+public class Entry {
     private int _id;
     private String body;
     private Long date;
     private double sentiment;
     private double latitude, longitude;
 
-    public Entry()
-    {
-        _id = 0;
+    public Entry() {
+        _id = 1;
         body = "";
         date = 0L;
         sentiment = 0.0;
@@ -25,14 +23,12 @@ public class Entry
         longitude = 0.0;
     }
 
-    public Entry(String body, Long date)
-    {
+    public Entry(String body, Long date) {
         this.body = body;
         this.date = date;
     }
 
-    public int get_id()
-    {
+    public int get_id() {
         return _id;
     }
 
@@ -44,5 +40,7 @@ public class Entry
         return date;
     }
 
-    public Double getSentiment() { return sentiment; }
+    public Double getSentiment() {
+        return sentiment;
+    }
 }

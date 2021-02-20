@@ -21,9 +21,10 @@ import java.util.Calendar;
 
 public class EditEntryActivity extends AppCompatActivity {
     public static final String KEY_ENTRY_ID = "com.example.moonote.KEY_ENTRY_ID";
+    private final int INVALID_ID = -1;
     private EditText journalText;
     private EntryManager entryManager;
-    private long entryID;
+    private int entryID;
 
 
     @Override
@@ -37,10 +38,10 @@ public class EditEntryActivity extends AppCompatActivity {
         // Assume you get passed the times
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            entryID = extras.getLong(KEY_ENTRY_ID);
+            entryID = extras.getInt(KEY_ENTRY_ID);
             loadEntry(entryID, entryManager);
         } else {
-            entryID = new Time(Calendar.getInstance().getTime().getTime()).getTime();
+            entryID = INVALID_ID;
         }
 
     }
@@ -66,7 +67,7 @@ public class EditEntryActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadEntry(long id, EntryManager manager) {
+    private void loadEntry(int id, EntryManager manager) {
         Entry entry = manager.getEntryByID(id);
         if (entry != null) {
             journalText.setText(entry.getBody());
@@ -78,20 +79,20 @@ public class EditEntryActivity extends AppCompatActivity {
 //        journalText.setText(text);
     }
 
-    private void saveEntry() {
+    private void saveEntry(EntryManager manager) {
 //        https://stackoverflow.com/questions/18056814/how-can-i-capture-the-formatting-of-my-edittext-text-so-that-bold-words-show-as
         Time currentTime = new Time(Calendar.getInstance().getTime().getTime());
         String plainText = journalText.getText().toString();
 
         Entry entry = manager.getEntryByID(entryID);
         if (entry == null) {
-            entry = new Entry(entryID, plainText, currentTime.getTime());
+            entry = new Entry(plainText, currentTime.getTime());
             manager.addEntry(entry);
             Log.i("ADDING ENTRY", String.format("entryID: %d, text: %s, epoch, %d", entry.get_id(), entry.getBody(), entry.getDate()));
         } else {
             //Case where we already have this Entry in the database
             // Think time should be the date of most recent editing
-            entry = new Entry(entryID, plainText, currentTime.getTime());
+            entry = new Entry(plainText, currentTime.getTime());
             manager.updateItem(entry);
             Log.i("UPDATING ENTRY ENTRY", String.format("New Entry value: entryID: %d, text: %s, epoch, %d", entry.get_id(), entry.getBody(), entry.getDate()));
         }
