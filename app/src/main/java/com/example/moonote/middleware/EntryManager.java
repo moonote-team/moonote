@@ -77,8 +77,8 @@ public class EntryManager
         database.update(DatabaseHelper.Entry.TABLE_NAME, updateEntry, DatabaseHelper.Entry.ID + "=?", args);
     }
 
-    public Entry getEntryByID(int id)
-    {
-
-    }
+//    public Entry getEntryByID(int id)
+//    {
+//
+//    }
 }

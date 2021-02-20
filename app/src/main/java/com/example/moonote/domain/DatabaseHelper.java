@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper
 {
-    private static final String DATABASE_NAME = "";
+    private static final String DATABASE_NAME = "moonote.db";
     private static final int DATABASE_VERSION = 1;
 
     public class Entry
