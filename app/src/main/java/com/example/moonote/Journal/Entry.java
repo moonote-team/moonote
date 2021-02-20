@@ -28,12 +28,22 @@ public class Entry {
         this.date = date;
     }
 
+    public Entry(String body, Long date, int _id) {
+        this.body = body;
+        this.date = date;
+        this._id = _id;
+    }
+
     public int get_id() {
         return _id;
     }
 
     public String getBody() {
         return body;
+    }
+
+    public void setBody(String newBody) {
+        this.body = newBody;
     }
 
     public Long getDate() {

@@ -34,7 +34,8 @@ public class EntryManager {
             while (!cursor.isAfterLast()) {
                 Entry entry = new Entry(
                         cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
-                        (long) cursor.getLong(cursor.getColumnIndex(DatabaseHelper.Entry.DATE))
+                        (long) cursor.getLong(cursor.getColumnIndex(DatabaseHelper.Entry.DATE)),
+                        (int) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID))
                 );
                 entries.add(entry);
                 cursor.moveToNext();
@@ -54,7 +55,8 @@ public class EntryManager {
             while (!cursor.isAfterLast()) {
                 Entry entry = new Entry(
                         cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
-                        (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE)
+                        (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE),
+                        cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID))
                 );
                 entries.add(entry);
                 cursor.moveToNext();
@@ -97,7 +99,8 @@ public class EntryManager {
         if (cursor.moveToFirst()) {
             entry = new Entry(
                     cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
-                    (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE)
+                    (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE),
+                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID))
             );
         }
 

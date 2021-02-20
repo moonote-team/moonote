@@ -1,19 +1,18 @@
 package com.example.moonote;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.moonote.Journal.Entry;
-import com.example.moonote.dummy.DummyContent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,16 +20,14 @@ import java.util.List;
 /**
  * A fragment representing a list of Items.
  */
-public class EntryFragment extends Fragment {
+public class EntryFragment extends Fragment implements MyEntryRecyclerViewAdapter.OnViewEntryListener {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
+    private static RecyclerView recyclerView;
+    private static List<Entry> mItems;
     // TODO: Customize parameters
     private int mColumnCount = 1;
-
-    private static RecyclerView recyclerView;
-
-    private static List<Entry> mItems;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -48,6 +45,16 @@ public class EntryFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    public void setAdapter(List<Entry> items) {
+        mItems = items;
+        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems, this));
+    }
+//
+//    public static void addItem(Entry entry) {
+//        mItems.add(entry);
+//        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems, this));
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,18 +84,15 @@ public class EntryFragment extends Fragment {
             //recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(DummyContent.ITEMS));
         }
 
-        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems));
+        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems, this));
 
         return view;
     }
 
-    public static void setAdapter(List<Entry> items) {
-        mItems = items;
-        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems));
-    }
-
-    public static void addItem(Entry entry) {
-        mItems.add(entry);
-        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems));
+    @Override
+    public void onEntryClick(Entry entry) {
+        Intent intent = new Intent(getActivity(), EditEntryActivity.class);
+        intent.putExtra(EditEntryActivity.KEY_ENTRY_ID, entry.get_id());
+        startActivity(intent);
     }
 }
