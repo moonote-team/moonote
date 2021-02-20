@@ -1,7 +1,6 @@
 package com.example.moonote;
 
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,12 +17,13 @@ import com.example.moonote.middleware.EntryManager;
 
 import java.sql.Time;
 import java.util.Calendar;
+import java.util.List;
 
 
 public class EditEntryActivity extends AppCompatActivity {
     private EditText journalText;
     private EntryManager entryManager;
-    
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +58,16 @@ public class EditEntryActivity extends AppCompatActivity {
     }
 
     private void loadEntry() {
+        // Just testing on the first entry that exists
+        List<Entry> entries = entryManager.getEntries();
+        if (entries.isEmpty()) {
+            return;
+        } else {
+            //PLACEHOLDER
+            Entry entry = entries.get(0);
+            String plainText = entry.getBody();
+            journalText.setText(plainText);
+        }
         // call this in OnCreate()
         //get given relevant info for the sql query
 //        String formattedText;
@@ -66,9 +76,10 @@ public class EditEntryActivity extends AppCompatActivity {
     }
 
     private void saveEntry() {
+//        https://stackoverflow.com/questions/18056814/how-can-i-capture-the-formatting-of-my-edittext-text-so-that-bold-words-show-as
         Time currentTime = new Time(Calendar.getInstance().getTime().getTime());
-        String formattedText = Html.toHtml(journalText.getText());
-        Entry thisEntry = new Entry(formattedText, currentTime);
+        String plainText = journalText.getText().toString();
+        Entry thisEntry = new Entry(plainText, currentTime.getTime());
         entryManager.addEntry(thisEntry);
     }
 }
