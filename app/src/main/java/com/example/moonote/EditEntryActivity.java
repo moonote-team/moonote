@@ -14,29 +14,18 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.moonote.Journal.Entry;
 import com.example.moonote.middleware.EntryManager;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.google.api.services.language.v1.CloudNaturalLanguage;
-import com.google.api.services.language.v1.CloudNaturalLanguageRequestInitializer;
-import com.google.api.services.language.v1.model.AnnotateTextRequest;
-import com.google.api.services.language.v1.model.AnnotateTextResponse;
-import com.google.api.services.language.v1.model.Document;
-import com.google.api.services.language.v1.model.Features;
-import com.google.api.services.language.v1.model.Sentiment;
 
-import java.io.IOException;
+import java.sql.Time;
 import java.util.Calendar;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 
 public class EditEntryActivity extends AppCompatActivity {
+    public static final String KEY_ENTRY_ID = "com.example.moonote.KEY_ENTRY_ID";
+    private final int INVALID_ID = -1;
     private EditText journalText;
     private EntryManager entryManager;
-    private CloudNaturalLanguage naturalLanguageService;
-    private String apiKey;
-    private ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
+    private int entryID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +35,15 @@ public class EditEntryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         journalText = findViewById(R.id.journal_text);
         entryManager = new EntryManager(this);
-        apiKey = getResources().getString(R.string.api_key);
-        naturalLanguageService = new CloudNaturalLanguage.Builder(
-                AndroidHttp.newCompatibleTransport(),
-                new AndroidJsonFactory(),
-                null
-        ).setCloudNaturalLanguageRequestInitializer(
-                new CloudNaturalLanguageRequestInitializer(apiKey)
-        ).build();
+        // Assume you get passed the times
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            entryID = extras.getInt(KEY_ENTRY_ID);
+            loadEntry(entryID, entryManager);
+        } else {
+            entryID = INVALID_ID;
+        }
+
     }
 
     @Override
@@ -65,29 +55,22 @@ public class EditEntryActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_save) {
-            Log.i("MENU ITEM", "ACTION BUTTON");
-            Toast.makeText(this, "RUNNING SAVE", Toast.LENGTH_SHORT).show();
-            saveEntry();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                Log.i("MENU ITEM", "ACTION BUTTON");
+                Toast.makeText(this, "RUNNING SAVE", Toast.LENGTH_SHORT).show();
+                saveEntry(entryManager);
+                return true;
+            case R.id.action_settings:
+                return true;
         }
-        else if (id == R.id.action_settings)
-            return true;
-
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadEntry() {
-        // Just testing on the first entry that exists
-        List<Entry> entries = entryManager.getAllEntries();
-        if (entries.isEmpty()) {
-            // return;
-        } else {
-            //PLACEHOLDER
-            Entry entry = entries.get(0);
-            String plainText = entry.getBody();
-            journalText.setText(plainText);
+    private void loadEntry(int id, EntryManager manager) {
+        Entry entry = manager.getEntryByID(id);
+        if (entry != null) {
+            journalText.setText(entry.getBody());
         }
         // call this in OnCreate()
         //get given relevant info for the sql query
@@ -96,53 +79,23 @@ public class EditEntryActivity extends AppCompatActivity {
 //        journalText.setText(text);
     }
 
-    private void saveEntry() {
+    private void saveEntry(EntryManager manager) {
 //        https://stackoverflow.com/questions/18056814/how-can-i-capture-the-formatting-of-my-edittext-text-so-that-bold-words-show-as
+        Time currentTime = new Time(Calendar.getInstance().getTime().getTime());
         String plainText = journalText.getText().toString();
-        Long time = Calendar.getInstance().getTimeInMillis();
-        Entry thisEntry = new Entry(plainText, time);
 
-        executor.submit(new Runnable() {
-            @Override
-            public void run() {
-                Sentiment sentiment = makeAnnotateRequest(plainText);
-                double score = sentiment.getScore();
-                thisEntry.setSentiment(score);
-            }
-        });
-
-        entryManager.addEntry(thisEntry);
-        EntryFragment.addItem(thisEntry);
-        finish();
-    }
-
-    public Sentiment makeAnnotateRequest(String plainText) {
-        Document document = new Document();
-        document.setType("PLAIN_TEXT");
-        document.setLanguage("en-US");
-        document.setContent(plainText);
-
-        Features features = new Features();
-        features.setExtractEntities(true);
-        features.setExtractDocumentSentiment(true);
-        features.setExtractSyntax(true);
-
-        AnnotateTextRequest request = new AnnotateTextRequest();
-        request.setDocument(document);
-        request.setFeatures(features);
-
-        AnnotateTextResponse response = null;
-        try {
-            response = naturalLanguageService.documents().annotateText(request).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
+        Entry entry = manager.getEntryByID(entryID);
+        if (entry == null) {
+            entry = new Entry(plainText, currentTime.getTime());
+            manager.addEntry(entry);
+            Log.i("ADDING ENTRY", String.format("entryID: %d, text: %s, epoch, %d", entry.get_id(), entry.getBody(), entry.getDate()));
+        } else {
+            entry.setBody(plainText);
+            manager.updateItem(entry);
+            Log.i("UPDATING ENTRY ENTRY", String.format("New Entry value: entryID: %d, text: %s, epoch, %d", entry.get_id(), entry.getBody(), entry.getDate()));
         }
+        Log.i("SAVING", "SAVING ENTRY");
 
-        if (response != null) {
-            Sentiment sent = response.getDocumentSentiment();
-            return sent;
-        }
 
-        return null;
     }
 }
