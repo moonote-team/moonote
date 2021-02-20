@@ -16,7 +16,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     private static final String DATABASE_NAME = "";
     private static final int DATABASE_VERSION = 1;
 
-    public static final String TABLE_NAME = "";
+    public static final String TABLE_NAME = "ENTRY";
     public static final String ID = "";
     public static final String DESCRIPTION = "";
     public static final String TIME = "";
@@ -36,7 +36,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
     {
-        String create = "";
+        String create = "CREATE TABLE ENTRY (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "BODY TEXT, " +
+                "DATE NUMERIC, " +
+                "SENTIMENT REAL, " +
+                "LATITUDE REAL, " +
+                "LONGITUDE REAL);";
         sqLiteDatabase.execSQL(create);
     }
 
