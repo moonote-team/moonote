@@ -21,6 +21,7 @@ import java.util.Calendar;
 
 public class EditEntryActivity extends AppCompatActivity {
     public static final String KEY_ENTRY_ID = "com.example.moonote.KEY_ENTRY_ID";
+    public static final int EDIT_ENTRY_REQUEST_CODE = 2;
     private final int INVALID_ID = -1;
     private EditText journalText;
     private EntryManager entryManager;

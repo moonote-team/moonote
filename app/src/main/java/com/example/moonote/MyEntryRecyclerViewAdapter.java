@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moonote.Journal.Entry;
-import com.example.moonote.dummy.DummyContent.DummyItem;
 import com.example.moonote.middleware.EntryManager;
 
 import java.text.SimpleDateFormat;
@@ -20,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecyclerViewAdapter.ViewHolder> {
