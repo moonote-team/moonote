@@ -82,13 +82,15 @@ public class EditEntryActivity extends AppCompatActivity {
         if (entry == null) {
             entry = new Entry(entryID, plainText, currentTime.getTime());
             manager.addEntry(entry);
+            Log.i("ADDING ENTRY", String.format("entryID: %d, text: %s, epoch, %d", entry.get_id(), entry.getBody(), entry.getDate()));
         } else {
             //Case where we already have this Entry in the database
             // Think time should be the date of most recent editing
-            entry = new Entry(entry.get_id(), plainText, currentTime.getTime());
+            entry = new Entry(entryID, plainText, currentTime.getTime());
             manager.updateItem(entry);
+            Log.i("UPDATING ENTRY ENTRY", String.format("New Entry value: entryID: %d, text: %s, epoch, %d", entry.get_id(), entry.getBody(), entry.getDate()));
         }
-        Log.i("ADDING ENTRY", String.format("entryID: %d, text: %s, epoch, %d", entry.get_id(), entry.getBody(), entry.getDate()));
+
 
     }
 }
