@@ -36,12 +36,21 @@
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
         android:contentDescription="@string/add_entry"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:layout_alignEnd="@id/appbar" />
 
     <CalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/appbar" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/entries"
+        android:name="com.example.moonote.EntryFragment"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/calendarView"
+        android:layout_marginTop="0dp" />
 
 </RelativeLayout>

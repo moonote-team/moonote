@@ -29,6 +29,29 @@ public class EntryManager
         databaseHelper = DatabaseHelper.getInstance(context);
     }
 
+    public List<Entry> runQuery(String query)
+    {
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+        Cursor cursor = database.rawQuery(query, null);
+        List<Entry> entries = new ArrayList<>();
+
+        if (cursor.moveToFirst())
+        {
+            while (!cursor.isAfterLast())
+            {
+                Entry entry = new Entry(
+                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
+                        (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE)
+                );
+                entries.add(entry);
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
+        return entries;
+    }
+
     public List<Entry> getAllEntries()
     {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
@@ -37,7 +60,7 @@ public class EntryManager
 
         if (cursor.moveToFirst())
         {
-            while (cursor.isAfterLast())
+            while (!cursor.isAfterLast())
             {
                 Entry entry = new Entry(
                         cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),

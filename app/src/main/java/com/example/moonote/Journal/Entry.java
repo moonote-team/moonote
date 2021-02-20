@@ -48,4 +48,6 @@ public class Entry
     {
         return date;
     }
+
+    public Double getSentiment() { return sentiment; }
 }
