@@ -10,6 +10,9 @@ import android.widget.TextView;
 import com.example.moonote.Journal.Entry;
 import com.example.moonote.dummy.DummyContent.DummyItem;
 
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,8 +36,14 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
+        long timestamp = mValues.get(position).getDate();
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.setTimeInMillis(timestamp);
+        String time = DateFormat.getTimeInstance().format(calendar.getTime());
+
         holder.mItem = mValues.get(position);
-        holder.txtDateTime.setText(mValues.get(position).getDate().toString());
+        holder.txtDateTime.setText(time);
         holder.txtEntryPreview.setText(mValues.get(position).getBody());
         holder.txtSentiment.setText(mValues.get(position).getSentiment().toString());
     }
