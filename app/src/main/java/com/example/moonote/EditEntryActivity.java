@@ -77,9 +77,9 @@ public class EditEntryActivity extends AppCompatActivity {
 
     private void saveEntry() {
 //        https://stackoverflow.com/questions/18056814/how-can-i-capture-the-formatting-of-my-edittext-text-so-that-bold-words-show-as
-        Time currentTime = new Time(Calendar.getInstance().getTime().getTime());
         String plainText = journalText.getText().toString();
-        Entry thisEntry = new Entry(plainText, currentTime.getTime());
+        Long time = Calendar.getInstance().getTimeInMillis();
+        Entry thisEntry = new Entry(plainText, time);
         Log.i("ENTRY", String.format("text: %s, epoch, %d", thisEntry.getBody(), thisEntry.getDate()));
         entryManager.addEntry(thisEntry);
         List<Entry> entries = entryManager.getAllEntries();
