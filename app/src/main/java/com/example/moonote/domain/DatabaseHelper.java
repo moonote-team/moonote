@@ -10,6 +10,7 @@ package com.example.moonote.domain;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 
 public class DatabaseHelper extends SQLiteOpenHelper
 {
@@ -39,6 +40,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
         return instance == null ? new DatabaseHelper(context) : instance;
     }
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            db.disableWriteAheadLogging();
+        }
+}
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase)
