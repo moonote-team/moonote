@@ -1,5 +1,6 @@
 package com.example.moonote;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -30,6 +31,7 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
         mValues = items;
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
@@ -51,20 +53,14 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
         holder.txtDateTime.setText(time);
 //        holder.txtEntryPreview.setText(mValues.get(position).getBody());
         holder.txtSentiment.setText(mValues.get(position).getSentiment().toString());
-        holder.btnEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Intent intent = new Intent(this, ViewEntryActivity.class);
-                // putExtra(the id of the entry);
-                // startActivity(intent);
-            }
+        holder.btnEdit.setOnClickListener(view -> {
+            // Intent intent = new Intent(this, ViewEntryActivity.class);
+            // putExtra(the id of the entry);
+            // startActivity(intent);
         });
-        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Pop up saying are you sure?????
-                // Do the deletion if user selects yes
-            }
+        holder.btnDelete.setOnClickListener(view -> {
+            // Pop up saying are you sure?????
+            // Do the deletion if user selects yes
         });
     }
 
