@@ -29,7 +29,7 @@ public class EntryManager
         databaseHelper = DatabaseHelper.getInstance(context);
     }
 
-    public List<Entry> getEntries()
+    public List<Entry> getAllEntries()
     {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery("SELECT * FROM " + DatabaseHelper.Entry.TABLE_NAME, null);
@@ -76,4 +76,9 @@ public class EntryManager
 
         database.update(DatabaseHelper.Entry.TABLE_NAME, updateEntry, DatabaseHelper.Entry.ID + "=?", args);
     }
+
+//    public Entry getEntryByID(int id)
+//    {
+//
+//    }
 }
