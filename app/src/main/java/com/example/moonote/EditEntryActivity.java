@@ -1,16 +1,28 @@
 package com.example.moonote;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.view.View;
+import com.example.moonote.Journal.Entry;
+import com.example.moonote.middleware.EntryManager;
+
+import java.util.Calendar;
+import java.util.List;
+
 
 public class EditEntryActivity extends AppCompatActivity {
+    private EditText journalText;
+    private EntryManager entryManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +30,64 @@ public class EditEntryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_entry);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        journalText = findViewById(R.id.journal_text);
+        entryManager = new EntryManager(this);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit_entry_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_save) {
+            Log.i("MENU ITEM", "ACTION BUTTON");
+            Toast.makeText(this, "RUNNING SAVE", Toast.LENGTH_SHORT).show();
+            saveEntry();
+            return true;
+        }
+        else if (id == R.id.action_settings)
+            return true;
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void loadEntry() {
+        // Just testing on the first entry that exists
+        List<Entry> entries = entryManager.getAllEntries();
+        if (entries.isEmpty()) {
+            // return;
+        } else {
+            //PLACEHOLDER
+            Entry entry = entries.get(0);
+            String plainText = entry.getBody();
+            journalText.setText(plainText);
+        }
+        // call this in OnCreate()
+        //get given relevant info for the sql query
+//        String formattedText;
+//        Spanned text = Html.fromHtml(formattedText);
+//        journalText.setText(text);
+    }
+
+    private void saveEntry() {
+//        https://stackoverflow.com/questions/18056814/how-can-i-capture-the-formatting-of-my-edittext-text-so-that-bold-words-show-as
+        String plainText = journalText.getText().toString();
+        Long time = Calendar.getInstance().getTimeInMillis();
+        Entry thisEntry = new Entry(plainText, time);
+        Log.i("ENTRY", String.format("text: %s, epoch, %d", thisEntry.getBody(), thisEntry.getDate()));
+        entryManager.addEntry(thisEntry);
+        List<Entry> entries = entryManager.getAllEntries();
+        for (Entry entry : entries) {
+            Log.i("ENTRY", String.format("text: %s, epoch, %d", entry.getBody(), entry.getDate()));
+        }
+        Log.i("SAVING", "SAVING ENTRY");
+        EntryFragment.addItem(thisEntry);
+        finish();
     }
 }

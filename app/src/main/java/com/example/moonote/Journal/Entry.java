@@ -7,9 +7,6 @@
 
 package com.example.moonote.Journal;
 
-import java.util.Date;
-import java.sql.Time;
-
 public class Entry
 {
     private int _id;
@@ -48,4 +45,6 @@ public class Entry
     {
         return date;
     }
+
+    public Double getSentiment() { return sentiment; }
 }
