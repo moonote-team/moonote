@@ -33,7 +33,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MoodMap"
+            android:name=".mapstuff.MoodMap"
             android:label="@string/title_activity_mood_map"></activity>
         <activity
             android:name=".EditEntryActivity"
