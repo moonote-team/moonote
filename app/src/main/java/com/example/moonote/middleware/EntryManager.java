@@ -49,6 +49,7 @@ public class EntryManager {
         ContentValues newEntry = new ContentValues();
         newEntry.put(DatabaseHelper.Entry.BODY, entry.getBody());
         newEntry.put(DatabaseHelper.Entry.DATE, entry.getDate().toString());
+        newEntry.put(DatabaseHelper.Entry.ID, entry.get_id().toString());
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
         database.insert(DatabaseHelper.Entry.TABLE_NAME, null, newEntry);
@@ -58,6 +59,8 @@ public class EntryManager {
         ContentValues updateEntry = new ContentValues();
         updateEntry.put(DatabaseHelper.Entry.BODY, entry.getBody());
         updateEntry.put(DatabaseHelper.Entry.DATE, entry.getDate().toString());
+        updateEntry.put(DatabaseHelper.Entry.ID, entry.get_id().toString());
+
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
 
@@ -68,7 +71,7 @@ public class EntryManager {
         database.update(DatabaseHelper.Entry.TABLE_NAME, updateEntry, DatabaseHelper.Entry.ID + "=?", args);
     }
 
-    public Entry getEntryByID(int id) {
+    public Entry getEntryByID(long id) {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery("SELECT * FROM " + DatabaseHelper.Entry.TABLE_NAME + " WHERE " + DatabaseHelper.Entry.ID + " = " + id, null);
 
@@ -76,6 +79,7 @@ public class EntryManager {
 
         if (cursor.moveToFirst()) {
             entry = new Entry(
+                    (long) cursor.getColumnIndex(DatabaseHelper.Entry.ID),
                     cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
                     (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE)
             );

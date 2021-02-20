@@ -7,20 +7,15 @@
 
 package com.example.moonote.Journal;
 
-import java.util.Date;
-import java.sql.Time;
-
-public class Entry
-{
-    private int _id;
+public class Entry {
+    private Long _id;
     private String body;
     private Long date;
     private double sentiment;
     private double latitude, longitude;
 
-    public Entry()
-    {
-        _id = 0;
+    public Entry() {
+        _id = 0L;
         body = "";
         date = 0L;
         sentiment = 0.0;
@@ -28,24 +23,27 @@ public class Entry
         longitude = 0.0;
     }
 
-    public Entry(String body, Long date)
-    {
+    public Entry(String body, Long date) {
         this.body = body;
         this.date = date;
     }
 
-    public int get_id()
-    {
+    public Entry(Long _id, String body, Long date) {
+        this._id = _id;
+        this.body = body;
+        this.date = date;
+
+    }
+
+    public Long get_id() {
         return _id;
     }
 
-    public String getBody()
-    {
+    public String getBody() {
         return body;
     }
 
-    public Long getDate()
-    {
+    public Long getDate() {
         return date;
     }
 }
