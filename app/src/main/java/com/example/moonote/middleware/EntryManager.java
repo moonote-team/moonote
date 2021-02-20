@@ -100,8 +100,22 @@ public class EntryManager
         database.update(DatabaseHelper.Entry.TABLE_NAME, updateEntry, DatabaseHelper.Entry.ID + "=?", args);
     }
 
-//    public Entry getEntryByID(int id)
-//    {
-//
-//    }
+    public Entry getEntryByID(int id)
+    {
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+        Cursor cursor = database.rawQuery("SELECT * FROM " + DatabaseHelper.Entry.TABLE_NAME + " WHERE " + DatabaseHelper.Entry.ID + " = " + id, null);
+
+        Entry entry = null;
+
+        if (cursor.moveToFirst())
+        {
+            entry = new Entry(
+                    cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
+                    (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE)
+            );
+        }
+
+        cursor.close();
+        return entry;
+    }
 }
