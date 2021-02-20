@@ -12,7 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.moonote.Journal.Entry;
 import com.example.moonote.dummy.DummyContent;
+
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -23,6 +26,8 @@ public class EntryFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
+
+    private static RecyclerView recyclerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -58,7 +63,7 @@ public class EntryFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -67,5 +72,9 @@ public class EntryFragment extends Fragment {
             //recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(DummyContent.ITEMS));
         }
         return view;
+    }
+
+    public static void setAdapter(List<Entry> items) {
+        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(items));
     }
 }

@@ -27,7 +27,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private EntryManager entryManager;
-    private Fragment entries;
+    private EntryFragment entries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
                 // Then, make SQL request for all entries between these two Epochs. Render them somehow
                 List<Entry> results = entryManager.runQuery("SELECT * FROM ENTRY WHERE " +
                         DatabaseHelper.Entry.DATE + " BETWEEN " + epochStart + " AND " + epochEnd);
-                Log.d("RESULTS", results.toString());
+
+                entries = (EntryFragment) getSupportFragmentManager().findFragmentById(R.id.entries);
+                entries.setAdapter(results);
             }
         });
-
-        entries = getSupportFragmentManager().findFragmentById(R.id.entries);
 
         entryManager = new EntryManager(this);
     }

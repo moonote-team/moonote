@@ -34,7 +34,7 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.txtDateTime.setText(mValues.get(position).get_id());
+        holder.txtDateTime.setText(mValues.get(position).getDate().toString());
         holder.txtEntryPreview.setText(mValues.get(position).getBody());
         holder.txtSentiment.setText(mValues.get(position).getSentiment().toString());
     }
