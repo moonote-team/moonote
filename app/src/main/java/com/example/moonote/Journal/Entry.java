@@ -47,4 +47,6 @@ public class Entry
     }
 
     public Double getSentiment() { return sentiment; }
+
+    public void setSentiment(Double sentiment) { this.sentiment = sentiment; }
 }
