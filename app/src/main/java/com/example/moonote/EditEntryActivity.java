@@ -57,8 +57,6 @@ public class EditEntryActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                Log.i("MENU ITEM", "ACTION BUTTON");
-                Toast.makeText(this, "RUNNING SAVE", Toast.LENGTH_SHORT).show();
                 saveEntry(entryManager);
                 finish();
                 return true;
@@ -89,14 +87,9 @@ public class EditEntryActivity extends AppCompatActivity {
         if (entry == null) {
             entry = new Entry(plainText, currentTime.getTime());
             manager.addEntry(entry);
-            Log.i("ADDING ENTRY", String.format("entryID: %d, text: %s, epoch, %d", entry.get_id(), entry.getBody(), entry.getDate()));
         } else {
             entry.setBody(plainText);
             manager.updateItem(entry);
-            Log.i("UPDATING ENTRY ENTRY", String.format("New Entry value: entryID: %d, text: %s, epoch, %d", entry.get_id(), entry.getBody(), entry.getDate()));
         }
-        Log.i("SAVING", "SAVING ENTRY");
-
-
     }
 }
