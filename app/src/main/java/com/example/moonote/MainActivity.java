@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CalendarView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +29,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, EditEntryActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        CalendarView calendarView = findViewById(R.id.calendarView);
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                // Create a Date object for the beginning of the day, get Epoch from that
+                // Create a Date object for the end of the day, get Epoch from that
+                // Then, make SQL request for all entries between these two Epochs. Render them somehow
+                Toast.makeText(MainActivity.this, String.format("year:%d, month:%d, day: %d", year, month, dayOfMonth), Toast.LENGTH_SHORT).show();
             }
         });
     }
