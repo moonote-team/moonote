@@ -88,6 +88,8 @@ public class EditEntryActivity extends AppCompatActivity {
         }
         Log.i("SAVING", "SAVING ENTRY");
         EntryFragment.addItem(thisEntry);
+
+
         finish();
     }
 }
