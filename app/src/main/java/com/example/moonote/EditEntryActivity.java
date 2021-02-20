@@ -59,7 +59,7 @@ public class EditEntryActivity extends AppCompatActivity {
 
     private void loadEntry() {
         // Just testing on the first entry that exists
-        List<Entry> entries = entryManager.getEntries();
+        List<Entry> entries = entryManager.getAllEntries();
         if (entries.isEmpty()) {
             return;
         } else {
@@ -80,6 +80,14 @@ public class EditEntryActivity extends AppCompatActivity {
         Time currentTime = new Time(Calendar.getInstance().getTime().getTime());
         String plainText = journalText.getText().toString();
         Entry thisEntry = new Entry(plainText, currentTime.getTime());
+        Log.i("ENTRY", String.format("text: %s, epoch, %d", thisEntry.getBody(), thisEntry.getDate()));
         entryManager.addEntry(thisEntry);
+        List<Entry> entries = entryManager.getAllEntries();
+        for (Entry entry : entries) {
+            Log.i("ENTRY", String.format("text: %s, epoch, %d", entry.getBody(), entry.getDate()));
+        }
+        Log.i("SAVING", "SAVING ENTRY");
+
+
     }
 }
