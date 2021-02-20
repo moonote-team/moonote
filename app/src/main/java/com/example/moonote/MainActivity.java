@@ -42,27 +42,32 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        entryManager = new EntryManager(this);
+
         CalendarView calendarView = findViewById(R.id.calendarView);
+
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                // Create a Date object for the beginning of the day, get Epoch from that
-                Calendar start = Calendar.getInstance();
-                start.clear();
-                start.set(year, month, dayOfMonth);
-                long epochStart = start.getTime().getTime();
-                long epochEnd = epochStart + (1000 * 60 * 60 * 24) - 1;
-
-                // Then, make SQL request for all entries between these two Epochs. Render them somehow
-                List<Entry> results = entryManager.runQuery("SELECT * FROM ENTRY WHERE " +
-                        DatabaseHelper.Entry.DATE + " BETWEEN " + epochStart + " AND " + epochEnd);
-
-                entries = (EntryFragment) getSupportFragmentManager().findFragmentById(R.id.entries);
-                entries.setAdapter(results);
+                updateCurrentEntries(view, year, month, dayOfMonth);
             }
         });
 
-        entryManager = new EntryManager(this);
+        calendarView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View view) {
+                Calendar date = Calendar.getInstance();
+                int year = date.get(Calendar.YEAR);
+                int month = date.get(Calendar.MONTH);
+                int day = date.get(Calendar.DAY_OF_MONTH);
+                updateCurrentEntries(calendarView, year, month, day);
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View view) {
+
+            }
+        });
     }
 
     @Override
@@ -85,5 +90,21 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void updateCurrentEntries(CalendarView view, int year, int month, int dayOfMonth) {
+        // Create a Date object for the beginning of the day, get Epoch from that
+        Calendar start = Calendar.getInstance();
+        start.clear();
+        start.set(year, month, dayOfMonth);
+        long epochStart = start.getTime().getTime();
+        long epochEnd = epochStart + (1000 * 60 * 60 * 24) - 1;
+
+        // Then, make SQL request for all entries between these two Epochs. Render them somehow
+        List<Entry> results = entryManager.runQuery("SELECT * FROM ENTRY WHERE " +
+                DatabaseHelper.Entry.DATE + " BETWEEN " + epochStart + " AND " + epochEnd);
+
+        entries = (EntryFragment) getSupportFragmentManager().findFragmentById(R.id.entries);
+        entries.setAdapter(results);
     }
 }
