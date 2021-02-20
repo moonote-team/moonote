@@ -1,7 +1,6 @@
 package com.example.moonote;
 
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -14,11 +13,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.moonote.Journal.Entry;
+import com.example.moonote.middleware.EntryManager;
+
+import java.sql.Time;
 import java.util.Calendar;
-import java.util.Date;
+
 
 public class EditEntryActivity extends AppCompatActivity {
     private EditText journalText;
+    private EntryManager entryManager;
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +32,7 @@ public class EditEntryActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         journalText = findViewById(R.id.journal_text);
+        entryManager = new EntryManager(this);
 
     }
 
@@ -60,11 +66,9 @@ public class EditEntryActivity extends AppCompatActivity {
     }
 
     private void saveEntry() {
-        // some way of creating text
-        Date today = Calendar.getInstance().getTime();
-        Editable text = journalText.getText();
-        String formattedText = Html.toHtml(text);
-        //depending on sql str
-        // make an sql request to add this entry to database
+        Time currentTime = new Time(Calendar.getInstance().getTime().getTime());
+        String formattedText = Html.toHtml(journalText.getText());
+        Entry thisEntry = new Entry(formattedText, currentTime);
+        entryManager.addEntry(thisEntry);
     }
 }
