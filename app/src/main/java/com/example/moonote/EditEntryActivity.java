@@ -15,13 +15,16 @@ import androidx.appcompat.widget.Toolbar;
 import com.example.moonote.Journal.Entry;
 import com.example.moonote.middleware.EntryManager;
 
+import java.sql.Time;
 import java.util.Calendar;
-import java.util.List;
 
 
 public class EditEntryActivity extends AppCompatActivity {
+    public static final String KEY_ENTRY_ID = "com.example.moonote.KEY_ENTRY_ID";
+    private final int INVALID_ID = -1;
     private EditText journalText;
     private EntryManager entryManager;
+    private int entryID;
 
 
     @Override
@@ -32,6 +35,14 @@ public class EditEntryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         journalText = findViewById(R.id.journal_text);
         entryManager = new EntryManager(this);
+        // Assume you get passed the times
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            entryID = extras.getInt(KEY_ENTRY_ID);
+            loadEntry(entryID, entryManager);
+        } else {
+            entryID = INVALID_ID;
+        }
 
     }
 
@@ -44,29 +55,22 @@ public class EditEntryActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_save) {
-            Log.i("MENU ITEM", "ACTION BUTTON");
-            Toast.makeText(this, "RUNNING SAVE", Toast.LENGTH_SHORT).show();
-            saveEntry();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                Log.i("MENU ITEM", "ACTION BUTTON");
+                Toast.makeText(this, "RUNNING SAVE", Toast.LENGTH_SHORT).show();
+                saveEntry(entryManager);
+                return true;
+            case R.id.action_settings:
+                return true;
         }
-        else if (id == R.id.action_settings)
-            return true;
-
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadEntry() {
-        // Just testing on the first entry that exists
-        List<Entry> entries = entryManager.getAllEntries();
-        if (entries.isEmpty()) {
-            // return;
-        } else {
-            //PLACEHOLDER
-            Entry entry = entries.get(0);
-            String plainText = entry.getBody();
-            journalText.setText(plainText);
+    private void loadEntry(int id, EntryManager manager) {
+        Entry entry = manager.getEntryByID(id);
+        if (entry != null) {
+            journalText.setText(entry.getBody());
         }
         // call this in OnCreate()
         //get given relevant info for the sql query
@@ -75,19 +79,23 @@ public class EditEntryActivity extends AppCompatActivity {
 //        journalText.setText(text);
     }
 
-    private void saveEntry() {
+    private void saveEntry(EntryManager manager) {
 //        https://stackoverflow.com/questions/18056814/how-can-i-capture-the-formatting-of-my-edittext-text-so-that-bold-words-show-as
+        Time currentTime = new Time(Calendar.getInstance().getTime().getTime());
         String plainText = journalText.getText().toString();
-        Long time = Calendar.getInstance().getTimeInMillis();
-        Entry thisEntry = new Entry(plainText, time);
-        Log.i("ENTRY", String.format("text: %s, epoch, %d", thisEntry.getBody(), thisEntry.getDate()));
-        entryManager.addEntry(thisEntry);
-        List<Entry> entries = entryManager.getAllEntries();
-        for (Entry entry : entries) {
-            Log.i("ENTRY", String.format("text: %s, epoch, %d", entry.getBody(), entry.getDate()));
+
+        Entry entry = manager.getEntryByID(entryID);
+        if (entry == null) {
+            entry = new Entry(plainText, currentTime.getTime());
+            manager.addEntry(entry);
+            Log.i("ADDING ENTRY", String.format("entryID: %d, text: %s, epoch, %d", entry.get_id(), entry.getBody(), entry.getDate()));
+        } else {
+            entry.setBody(plainText);
+            manager.updateItem(entry);
+            Log.i("UPDATING ENTRY ENTRY", String.format("New Entry value: entryID: %d, text: %s, epoch, %d", entry.get_id(), entry.getBody(), entry.getDate()));
         }
         Log.i("SAVING", "SAVING ENTRY");
-        EntryFragment.addItem(thisEntry);
-        finish();
+
+
     }
 }
