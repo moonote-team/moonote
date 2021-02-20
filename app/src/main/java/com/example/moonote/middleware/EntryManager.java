@@ -108,7 +108,10 @@ public class EntryManager {
         return entry;
     }
 
-    public void deleteEntry(int id) {
-
+    public void deleteEntry(int id)
+    {
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+//        database.rawQuery("DELETE FROM " + DatabaseHelper.Entry.TABLE_NAME + " WHERE " + DatabaseHelper.Entry.ID + " = " + id, null);
+        database.delete(DatabaseHelper.Entry.TABLE_NAME, DatabaseHelper.Entry.ID + " = " + id, null);
     }
 }
