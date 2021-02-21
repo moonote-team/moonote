@@ -1,6 +1,7 @@
 package com.example.moonote;
 
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,11 +49,24 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
         Date date = calendar.getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
         String time = simpleDateFormat.format(date);
+        Double sentiment = mValues.get(position).getSentiment();
 
         holder.mItem = mValues.get(position);
         holder.txtDateTime.setText(time);
 //        holder.txtEntryPreview.setText(mValues.get(position).getBody());
-        holder.txtSentiment.setText(mValues.get(position).getSentiment().toString());
+        holder.txtSentiment.setText(sentiment.toString());
+
+        int textColor;
+        if (sentiment > 0.0) {
+            textColor = Color.GREEN;
+        } else if (sentiment < 0.0) {
+            textColor = Color.RED;
+        } else {
+            textColor = Color.BLACK;
+        }
+        holder.txtDateTime.setTextColor(textColor);
+        holder.txtSentiment.setTextColor(textColor);
+
         holder.btnEdit.setOnClickListener(view -> {
             // line below is how we launch new activity
             onViewEntryListener.onEntryClick(holder.mItem);
