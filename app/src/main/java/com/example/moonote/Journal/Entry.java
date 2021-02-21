@@ -10,9 +10,9 @@ package com.example.moonote.Journal;
 public class Entry {
     private int _id;
     private String body;
-    private Long date;
-    private Double sentiment;
-    private Double latitude, longitude;
+    private long date;
+    private double sentiment;
+    private double latitude, longitude;
 
     public Entry() {
         _id = 1;
@@ -23,18 +23,18 @@ public class Entry {
         longitude = 0.0;
     }
 
-    public Entry(String body, Long date) {
+    public Entry(String body, long date) {
         this.body = body;
         this.date = date;
     }
 
-    public Entry(String body, Long date, int _id) {
+    public Entry(String body, long date, int _id) {
         this.body = body;
         this.date = date;
         this._id = _id;
     }
 
-    public Entry(String body, Long date, int _id, Double sentiment) {
+    public Entry(String body, long date, int _id, double sentiment) {
         this.body = body;
         this.date = date;
         this._id = _id;
@@ -53,15 +53,15 @@ public class Entry {
         this.body = newBody;
     }
 
-    public Long getDate() {
+    public long getDate() {
         return date;
     }
 
-    public Double getSentiment() {
+    public double getSentiment() {
         return sentiment;
     }
 
-    public void setSentiment(Double sentiment) {
+    public void setSentiment(double sentiment) {
         this.sentiment = sentiment;
     }
 }
