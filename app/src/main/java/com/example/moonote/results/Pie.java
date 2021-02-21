@@ -41,7 +41,7 @@ public class Pie extends Fragment {
 
         PieDataSet dataSet = new PieDataSet(data_entries, "MoodChart");
 
-        dataSet.setColor(Color.rgb(0,66,141));
+        dataSet.setColors(new int[] {R.color.design_default_color_primary, R.color.design_default_color_on_secondary, R.color.light_tan}, getContext());
 
         dataSet.setValueTextColor(Color.WHITE);
 
