@@ -1,7 +1,6 @@
 package com.example.moonote;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -124,5 +123,9 @@ public class MainActivity extends AppCompatActivity implements DatabaseChangedRe
         int month = Integer.parseInt(splitSelectedDate[1]) - 1;
         int year = Integer.parseInt(splitSelectedDate[2]);
         updateCurrentEntries(year, month, day);
+    }
+
+    public void launchCalendarView(View view) {
+        Log.i("RUNNING", "CALENDAR VIEW");
     }
 }

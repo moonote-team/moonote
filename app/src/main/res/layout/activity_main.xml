@@ -60,6 +60,88 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:scaleType="centerCrop"
+
         app:srcCompat="@drawable/bottom_nav" />
+
+    <ImageButton
+        android:id="@+id/report_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="68dp"
+        android:layout_marginBottom="@dimen/nav_bar_btn_vert"
+        android:background="@drawable/ic_report_button" />
+
+    <ImageView
+        android:id="@+id/report_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="62dp"
+        android:layout_marginBottom="@dimen/nav_bar_text_vert_margin"
+        app:srcCompat="@drawable/ic_report_label" />
+
+    <ImageButton
+        android:id="@+id/entries_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="68dp"
+        android:layout_marginBottom="@dimen/nav_bar_btn_vert"
+        android:background="@drawable/ic_entries_button" />
+
+    <ImageView
+        android:id="@+id/entries_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="67dp"
+        android:layout_marginBottom="@dimen/nav_bar_text_vert_margin"
+        app:srcCompat="@drawable/ic_entries_label" />
+
+    <ImageButton
+        android:id="@+id/stats_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/nav_bar_btn_horiz"
+        android:layout_marginBottom="@dimen/nav_bar_btn_vert"
+        android:background="@drawable/ic_stats_button" />
+
+    <ImageView
+        android:id="@+id/stats_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="25dp"
+        android:layout_marginBottom="@dimen/nav_bar_text_vert_margin"
+        app:srcCompat="@drawable/ic_stats_label" />
+
+    <ImageButton
+        android:id="@+id/calendar_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="@dimen/nav_bar_btn_horiz"
+        android:layout_marginBottom="@dimen/nav_bar_btn_vert"
+        android:background="@drawable/ic_calendar_button"
+        android:onClick="launchCalendarView" />
+
+    <ImageView
+        android:id="@+id/calendar_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="18dp"
+        android:layout_marginBottom="@dimen/nav_bar_text_vert_margin"
+        app:srcCompat="@drawable/ic_calendar_label" />
 
 </RelativeLayout>
