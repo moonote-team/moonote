@@ -8,7 +8,7 @@
 package com.example.moonote.Journal;
 
 public class Entry {
-    private int _id;
+    private long _id;
     private String body;
     private long date;
     private double sentiment;
@@ -58,9 +58,11 @@ public class Entry {
         this.longitude = longitude;
     }
 
-    public int get_id() {
+    public long get_id() {
         return _id;
     }
+
+    public void set_id(long _id) { this._id = _id; }
 
     public String getBody() {
         return body;
@@ -83,10 +85,14 @@ public class Entry {
         return latitude;
     }
 
+    public void setLatitude(double latitude) { this.latitude = latitude; }
+
     public double getLongitude()
     {
         return longitude;
     }
+
+    public void setLongitude(double longitude) {this.longitude = longitude; }
 
     public void setSentiment(double sentiment) {
         this.sentiment = sentiment;

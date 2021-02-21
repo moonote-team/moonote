@@ -16,6 +16,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.moonote.Journal.Entry;
 import com.example.moonote.domain.DatabaseHelper;
+import com.example.moonote.mapstuff.MapActivity;
 import com.example.moonote.middleware.EntryManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 

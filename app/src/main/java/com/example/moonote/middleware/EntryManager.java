@@ -65,14 +65,13 @@ public class EntryManager {
         ContentValues newEntry = new ContentValues();
         newEntry.put(DatabaseHelper.Entry.BODY, entry.getBody());
         newEntry.put(DatabaseHelper.Entry.DATE, entry.getDate());
-        newEntry.put(DatabaseHelper.Entry.LATITUDE, entry.getLatitude());
-        newEntry.put(DatabaseHelper.Entry.LONGITUDE, entry.getLongitude());
         newEntry.put(DatabaseHelper.Entry.SENTIMENT, entry.getSentiment());
         newEntry.put(DatabaseHelper.Entry.LATITUDE, entry.getLatitude());
         newEntry.put(DatabaseHelper.Entry.LONGITUDE, entry.getLongitude());
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
-        database.insert(DatabaseHelper.Entry.TABLE_NAME, null, newEntry);
+        long id = database.insert(DatabaseHelper.Entry.TABLE_NAME, null, newEntry);
+        entry.set_id(id);
     }
 
     public void updateItem(Entry entry) {
@@ -80,6 +79,8 @@ public class EntryManager {
         updateEntry.put(DatabaseHelper.Entry.BODY, entry.getBody());
         updateEntry.put(DatabaseHelper.Entry.DATE, entry.getDate());
         updateEntry.put(DatabaseHelper.Entry.SENTIMENT, entry.getSentiment());
+        updateEntry.put(DatabaseHelper.Entry.LATITUDE, entry.getLatitude());
+        updateEntry.put(DatabaseHelper.Entry.LONGITUDE, entry.getLongitude());
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
 
@@ -90,20 +91,13 @@ public class EntryManager {
         database.update(DatabaseHelper.Entry.TABLE_NAME, updateEntry, DatabaseHelper.Entry.ID + "=?", args);
     }
 
-    public Entry getEntryByID(int id) {
+    public Entry getEntryByID(long id) {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery("SELECT * FROM " + DatabaseHelper.Entry.TABLE_NAME + " WHERE " + DatabaseHelper.Entry.ID + " = " + id, null);
 
         Entry entry = null;
 
         if (cursor.moveToFirst()) {
-            entry = new Entry(
-                    cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
-                    (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE),
-                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID)),
-                    cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Entry.LATITUDE)),
-                    cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Entry.LONGITUDE))
-            );
             entry = getEntryFromCursorPosition(cursor);
         }
 
@@ -111,18 +105,22 @@ public class EntryManager {
         return entry;
     }
 
-    public void deleteEntry(int id) {
+    public void deleteEntry(long id) {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
 //        database.rawQuery("DELETE FROM " + DatabaseHelper.Entry.TABLE_NAME + " WHERE " + DatabaseHelper.Entry.ID + " = " + id, null);
         database.delete(DatabaseHelper.Entry.TABLE_NAME, DatabaseHelper.Entry.ID + " = " + id, null);
     }
 
     public Entry getEntryFromCursorPosition(Cursor cursor) {
-        return new Entry(
+        Entry entry = new Entry(
                 cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
                 cursor.getLong(cursor.getColumnIndex(DatabaseHelper.Entry.DATE)),
                 cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID)),
                 cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Entry.SENTIMENT))
         );
+        cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Entry.LATITUDE));
+        cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Entry.LONGITUDE));
+
+        return entry;
     }
 }
