@@ -79,6 +79,12 @@ public class EditEntryActivity extends AppCompatActivity {
 
         // Location service
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient.getLastLocation().addOnSuccessListener(EditEntryActivity.this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+
+            }
+        });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -178,10 +184,10 @@ public class EditEntryActivity extends AppCompatActivity {
 //                entry = new Entry(plainText, currentTime.getTime(), location.getLatitude(), location.getLongitude());
 //            } catch (Exception e) {
 //                Log.d("yathavan", "exception with getting location: " + e.getMessage());
-                entry = new Entry(plainText, currentTime.getTime());
+//                entry = new Entry(plainText, currentTime.getTime());
 //            }
 
-            manager.addEntry(entry);
+//            manager.addEntry(entry);
         } else {
             entry.setBody(plainText);
             Entry finalizedEntry = entry;

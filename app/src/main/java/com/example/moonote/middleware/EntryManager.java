@@ -70,7 +70,8 @@ public class EntryManager {
         newEntry.put(DatabaseHelper.Entry.LONGITUDE, entry.getLongitude());
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
-        database.insert(DatabaseHelper.Entry.TABLE_NAME, null, newEntry);
+        long id = database.insert(DatabaseHelper.Entry.TABLE_NAME, null, newEntry);
+        entry.set_id(id);
     }
 
     public void updateItem(Entry entry) {
@@ -90,7 +91,7 @@ public class EntryManager {
         database.update(DatabaseHelper.Entry.TABLE_NAME, updateEntry, DatabaseHelper.Entry.ID + "=?", args);
     }
 
-    public Entry getEntryByID(int id) {
+    public Entry getEntryByID(long id) {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery("SELECT * FROM " + DatabaseHelper.Entry.TABLE_NAME + " WHERE " + DatabaseHelper.Entry.ID + " = " + id, null);
 
@@ -104,7 +105,7 @@ public class EntryManager {
         return entry;
     }
 
-    public void deleteEntry(int id) {
+    public void deleteEntry(long id) {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
 //        database.rawQuery("DELETE FROM " + DatabaseHelper.Entry.TABLE_NAME + " WHERE " + DatabaseHelper.Entry.ID + " = " + id, null);
         database.delete(DatabaseHelper.Entry.TABLE_NAME, DatabaseHelper.Entry.ID + " = " + id, null);
