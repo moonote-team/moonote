@@ -140,6 +140,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseChangedRe
     }
 
     public void launchStats(View view) {
+        Intent intent = new Intent(this, ViewPieActivity.class);
+        startActivity(intent);
         //run when pressing stats button
     }
 }
