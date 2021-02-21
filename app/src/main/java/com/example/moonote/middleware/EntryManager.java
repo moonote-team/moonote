@@ -29,14 +29,11 @@ public class EntryManager {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery(query, null);
         List<Entry> entries = new ArrayList<>();
+        Entry entry;
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                Entry entry = new Entry(
-                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
-                        (long) cursor.getLong(cursor.getColumnIndex(DatabaseHelper.Entry.DATE)),
-                        (int) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID))
-                );
+                entry = getEntryFromCursorPosition(cursor);
                 entries.add(entry);
                 cursor.moveToNext();
             }
@@ -50,14 +47,11 @@ public class EntryManager {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery("SELECT * FROM " + DatabaseHelper.Entry.TABLE_NAME, null);
         List<Entry> entries = new ArrayList<>();
+        Entry entry;
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                Entry entry = new Entry(
-                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
-                        (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE),
-                        cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID))
-                );
+                entry = getEntryFromCursorPosition(cursor);
                 entries.add(entry);
                 cursor.moveToNext();
             }
@@ -71,6 +65,7 @@ public class EntryManager {
         ContentValues newEntry = new ContentValues();
         newEntry.put(DatabaseHelper.Entry.BODY, entry.getBody());
         newEntry.put(DatabaseHelper.Entry.DATE, entry.getDate());
+        newEntry.put(DatabaseHelper.Entry.SENTIMENT, entry.getSentiment());
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
         database.insert(DatabaseHelper.Entry.TABLE_NAME, null, newEntry);
@@ -80,6 +75,7 @@ public class EntryManager {
         ContentValues updateEntry = new ContentValues();
         updateEntry.put(DatabaseHelper.Entry.BODY, entry.getBody());
         updateEntry.put(DatabaseHelper.Entry.DATE, entry.getDate());
+        updateEntry.put(DatabaseHelper.Entry.SENTIMENT, entry.getSentiment());
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
 
@@ -97,21 +93,25 @@ public class EntryManager {
         Entry entry = null;
 
         if (cursor.moveToFirst()) {
-            entry = new Entry(
-                    cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
-                    (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE),
-                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID))
-            );
+            entry = getEntryFromCursorPosition(cursor);
         }
 
         cursor.close();
         return entry;
     }
 
-    public void deleteEntry(int id)
-    {
+    public void deleteEntry(int id) {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
 //        database.rawQuery("DELETE FROM " + DatabaseHelper.Entry.TABLE_NAME + " WHERE " + DatabaseHelper.Entry.ID + " = " + id, null);
         database.delete(DatabaseHelper.Entry.TABLE_NAME, DatabaseHelper.Entry.ID + " = " + id, null);
+    }
+
+    public Entry getEntryFromCursorPosition(Cursor cursor) {
+        return new Entry(
+                cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
+                cursor.getLong(cursor.getColumnIndex(DatabaseHelper.Entry.DATE)),
+                cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID)),
+                cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Entry.SENTIMENT))
+        );
     }
 }

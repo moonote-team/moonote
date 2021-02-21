@@ -46,15 +46,15 @@ public class EntryFragment extends Fragment implements MyEntryRecyclerViewAdapte
         return fragment;
     }
 
-    public void setAdapter(List<Entry> items) {
-        mItems = items;
-        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems, this));
-    }
-//
 //    public static void addItem(Entry entry) {
 //        mItems.add(entry);
 //        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems, this));
 //    }
+
+    public void setAdapter(List<Entry> items) {
+        mItems = items;
+        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems, this, getActivity()));
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,7 +84,7 @@ public class EntryFragment extends Fragment implements MyEntryRecyclerViewAdapte
             //recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(DummyContent.ITEMS));
         }
 
-        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems, this));
+        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems, this, getActivity()));
 
         return view;
     }

@@ -1,6 +1,9 @@
 package com.example.moonote;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * TODO: Replace the implementation with code for your data type.
@@ -25,10 +29,12 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
 
     private final List<Entry> mValues;
     private OnViewEntryListener onViewEntryListener;
+    private Context context;
 
-    public MyEntryRecyclerViewAdapter(List<Entry> items, OnViewEntryListener onViewEntryListener) {
+    public MyEntryRecyclerViewAdapter(List<Entry> items, OnViewEntryListener onViewEntryListener, Context context) {
         this.onViewEntryListener = onViewEntryListener;
         mValues = items;
+        this.context = context;
     }
 
     @NonNull
@@ -48,11 +54,40 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
         Date date = calendar.getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
         String time = simpleDateFormat.format(date);
+        Double sentiment = mValues.get(position).getSentiment() * 100;
+        String approxSentiment = String.format(Locale.getDefault(), "%.0f%%",
+                Math.abs(sentiment));
 
         holder.mItem = mValues.get(position);
         holder.txtDateTime.setText(time);
 //        holder.txtEntryPreview.setText(mValues.get(position).getBody());
-        holder.txtSentiment.setText(mValues.get(position).getSentiment().toString());
+        holder.txtSentiment.setText(approxSentiment);
+
+        int textColor;
+        if (sentiment > 10.0) {
+            textColor = Color.GREEN;
+        } else if (sentiment < -10.0) {
+            textColor = Color.RED;
+        } else {
+            textColor = Color.BLACK;
+        }
+
+        String mood;
+        if (sentiment >= 80) mood = "Excellent";
+        else if (sentiment >= 60) mood = "Great";
+        else if (sentiment >= 30) mood = "Good";
+        else if (sentiment >= 15) mood = "Decent";
+        else if (sentiment >= -15) mood = "Average";
+        else if (sentiment >= -30) mood = "Mediocre";
+        else if (sentiment >= -60) mood = "Bad";
+        else if (sentiment >= -80) mood = "Terrible";
+        else if (sentiment >= -100) mood = "Very Worrysome";
+        else mood = "Undefined";
+        holder.txtSentiment.append(" (" + mood + ")");
+
+        holder.txtDateTime.setTextColor(textColor);
+        holder.txtSentiment.setTextColor(textColor);
+
         holder.btnEdit.setOnClickListener(view -> {
             // line below is how we launch new activity
             onViewEntryListener.onEntryClick(holder.mItem);
@@ -68,6 +103,10 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
                 // delete entry
                 EntryManager entryManager = new EntryManager(view.getContext());
                 entryManager.deleteEntry(mValues.get(position).get_id());
+                Intent dbChange = new Intent(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
+                context.sendBroadcast(dbChange);
+
+
             });
             builder.setPositiveButton("Nah", (dialogInterface, i) ->
             {
