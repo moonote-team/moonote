@@ -1,6 +1,7 @@
 package com.example.moonote;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,13 +17,16 @@ import com.example.moonote.domain.DatabaseHelper;
 import com.example.moonote.middleware.EntryManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DatabaseChangedReceiver.DatabaseChangedListener {
     private EntryManager entryManager;
     private EntryFragment entries;
-   
+    private CalendarView calendarView;
+    private DatabaseChangedReceiver dbChangeReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,23 +34,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        dbChangeReceiver = new DatabaseChangedReceiver(this);
+        IntentFilter filter = new IntentFilter(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
+        this.registerReceiver(dbChangeReceiver, filter);
+
+
+        entryManager = new EntryManager(this);
+        entries = (EntryFragment) getSupportFragmentManager().findFragmentById(R.id.entries);
+
+        calendarView = findViewById(R.id.calendarView);
+
+        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+            @Override
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+                updateCurrentEntries(year, month, dayOfMonth);
+            }
+        });
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, EditEntryActivity.class);
             startActivity(intent);
-        });
-
-        entryManager = new EntryManager(this);
-        entries = (EntryFragment) getSupportFragmentManager().findFragmentById(R.id.entries);
-
-        CalendarView calendarView = findViewById(R.id.calendarView);
-
-        calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
-            @Override
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                updateCurrentEntries(view, year, month, dayOfMonth);
-            }
         });
 
         calendarView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
@@ -56,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 int year = date.get(Calendar.YEAR);
                 int month = date.get(Calendar.MONTH);
                 int day = date.get(Calendar.DAY_OF_MONTH);
-                updateCurrentEntries(calendarView, year, month, day);
+                updateCurrentEntries(year, month, day);
             }
 
             @Override
@@ -64,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(dbChangeReceiver);
     }
 
     @Override
@@ -88,18 +102,27 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void updateCurrentEntries(CalendarView view, int year, int month, int dayOfMonth) {
+    public void updateCurrentEntries(int year, int month, int dayOfMonth) {
         // Create a Date object for the beginning of the day, get Epoch from that
         Calendar start = Calendar.getInstance();
         start.clear();
         start.set(year, month, dayOfMonth);
         long epochStart = start.getTime().getTime();
         long epochEnd = epochStart + (1000 * 60 * 60 * 24) - 1;
-
-        // Then, make SQL request for all entries between these two Epochs. Render them somehow
         List<Entry> results = entryManager.runQuery("SELECT * FROM ENTRY WHERE " +
                 DatabaseHelper.Entry.DATE + " BETWEEN " + epochStart + " AND " + epochEnd);
 
         entries.setAdapter(results);
+    }
+
+    @Override
+    public void onDatabaseChange() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        String selectedDate = sdf.format(new Date(calendarView.getDate()));
+        String[] splitSelectedDate = selectedDate.split("/");
+        int day = Integer.parseInt(splitSelectedDate[0]);
+        int month = Integer.parseInt(splitSelectedDate[1]) - 1;
+        int year = Integer.parseInt(splitSelectedDate[2]);
+        updateCurrentEntries(year, month, day);
     }
 }

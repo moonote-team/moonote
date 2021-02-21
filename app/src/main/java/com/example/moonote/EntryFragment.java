@@ -53,7 +53,7 @@ public class EntryFragment extends Fragment implements MyEntryRecyclerViewAdapte
 
     public void setAdapter(List<Entry> items) {
         mItems = items;
-        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems, this));
+        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems, this, getActivity()));
     }
 
     @Override
@@ -84,7 +84,7 @@ public class EntryFragment extends Fragment implements MyEntryRecyclerViewAdapte
             //recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(DummyContent.ITEMS));
         }
 
-        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems, this));
+        recyclerView.setAdapter(new MyEntryRecyclerViewAdapter(mItems, this, getActivity()));
 
         return view;
     }
