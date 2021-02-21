@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * TODO: Replace the implementation with code for your data type.
@@ -50,7 +51,7 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
         String time = simpleDateFormat.format(date);
         Double sentiment = mValues.get(position).getSentiment();
-        String approxSentiment = String.format("%.3f", sentiment);
+        String approxSentiment = String.format(Locale.getDefault(), "%.3f", sentiment);
 
         holder.mItem = mValues.get(position);
         holder.txtDateTime.setText(time);
@@ -65,6 +66,20 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
         } else {
             textColor = Color.BLACK;
         }
+
+        String mood;
+        if (sentiment >= 8.0) mood = "Excellent";
+        else if (sentiment >= 6.0) mood = "Great";
+        else if (sentiment >= 3.0) mood = "Good";
+        else if (sentiment >= 1.5) mood = "Decent";
+        else if (sentiment >= -1.5) mood = "Average";
+        else if (sentiment >= -3.0) mood = "Grumpy";
+        else if (sentiment >= -6.0) mood = "Bad";
+        else if (sentiment >= -8.0) mood = "Terrible";
+        else if (sentiment >= -10.0) mood = "Very Worrysome";
+        else mood = "Undefined";
+        holder.txtSentiment.append(" (" + mood + ")");
+
         holder.txtDateTime.setTextColor(textColor);
         holder.txtSentiment.setTextColor(textColor);
 
