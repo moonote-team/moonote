@@ -1,15 +1,20 @@
 package com.example.moonote.mapstuff;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.Fragment;
 
 import com.example.moonote.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -20,10 +25,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-public class MoodMap extends FragmentActivity implements OnMapReadyCallback
+public class MoodMap extends Fragment implements OnMapReadyCallback
 {
 
     private GoogleMap googleMap;
@@ -36,34 +40,39 @@ public class MoodMap extends FragmentActivity implements OnMapReadyCallback
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
     private CameraPosition cameraPosition;
+    private Activity activity;
 
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mood_map);
+        View view = inflater.inflate(R.layout.activity_mood_map, container, false);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        SupportMapFragment mapFragment = (SupportMapFragment) getParentFragmentManager()
+                .findFragmentById(R.id.mapfrag);
+//        mapFragment.getMapAsync(this::onMapReady);
 
         if (savedInstanceState != null)
         {
             lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
             cameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
+
+        this.activity = getActivity();
+
+        return view;
     }
 
     private void getLocationPermissions()
     {
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+        if (ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
         {
             locationPermissionGranted = true;
         }
         else
         {
-            ActivityCompat.requestPermissions(this, new String[] {
+            ActivityCompat.requestPermissions(getActivity(), new String[] {
                     Manifest.permission.ACCESS_FINE_LOCATION
             }, PERMISSIONS_REQUEST_ASSESS_FINE_LOCATION);
         }
@@ -101,7 +110,7 @@ public class MoodMap extends FragmentActivity implements OnMapReadyCallback
         this.googleMap = googleMap;
 
          updateLocationUI();
-        // getDeviceLocation();
+         getDeviceLocation();
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
@@ -115,21 +124,21 @@ public class MoodMap extends FragmentActivity implements OnMapReadyCallback
         {
             return;
         }
-        
+
         try {
             if (locationPermissionGranted)
             {
                 googleMap.setMyLocationEnabled(true);
                 googleMap.getUiSettings().setMyLocationButtonEnabled(true);
             }
-            else 
+            else
             {
                 googleMap.setMyLocationEnabled(false);
                 googleMap.getUiSettings().setMyLocationButtonEnabled(false);
                 lastKnownLocation = null;
                 getLocationPermissions();
             }
-        } 
+        }
         catch (SecurityException securityException) {
             Log.d("yathavan", "Exception: " + securityException.getMessage());
         }
@@ -141,28 +150,24 @@ public class MoodMap extends FragmentActivity implements OnMapReadyCallback
             if (locationPermissionGranted)
             {
                 Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>()
+                locationResult.addOnCompleteListener(getActivity(), task ->
                 {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task)
+                    if (task.isSuccessful())
                     {
-                        if (task.isSuccessful())
+                        lastKnownLocation = task.getResult();
+                        if (lastKnownLocation != null)
                         {
-                            lastKnownLocation = task.getResult();
-                            if (lastKnownLocation != null)
-                            {
-                                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), DEFAULT_ZOOM)
-                                );
-                            }
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), DEFAULT_ZOOM)
+                            );
                         }
-                        else
-                        {
-                            Log.d("yathavan", "Current location is null. Using defaults.");
-                            Log.d("yathavan", "Exception: " + task.getException());
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mumbai, DEFAULT_ZOOM));
-                            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-                        }
+                    }
+                    else
+                    {
+                        Log.d("yathavan", "Current location is null. Using defaults.");
+                        Log.d("yathavan", "Exception: " + task.getException());
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mumbai, DEFAULT_ZOOM));
+                        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
                     }
                 });
             }
@@ -173,7 +178,7 @@ public class MoodMap extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState)
+    public void onSaveInstanceState(@NonNull Bundle outState)
     {
         if (googleMap != null)
         {
@@ -181,5 +186,10 @@ public class MoodMap extends FragmentActivity implements OnMapReadyCallback
             outState.putParcelable(KEY_LOCATION, lastKnownLocation);
         }
         super.onSaveInstanceState(outState);
+    }
+
+    public Location getLastKnownLocation()
+    {
+        return lastKnownLocation;
     }
 }

@@ -6,13 +6,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.moonote.Journal.Entry;
+import com.example.moonote.mapstuff.MoodMap;
 import com.example.moonote.middleware.EntryManager;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -31,7 +31,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 
-public class EditEntryActivity extends AppCompatActivity {
+public class EditEntryActivity extends AppCompatActivity
+{
     public static final String KEY_ENTRY_ID = "com.example.moonote.KEY_ENTRY_ID";
     private final int INVALID_ID = -1;
     private EditText journalText;
@@ -42,9 +43,12 @@ public class EditEntryActivity extends AppCompatActivity {
     private String apiKey;
     private ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
 
+    private MoodMap moodMap = new MoodMap();
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_entry);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -61,25 +65,30 @@ public class EditEntryActivity extends AppCompatActivity {
         ).build();
         // Assume you get passed the times
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
+        if (extras != null)
+        {
             entryID = extras.getInt(KEY_ENTRY_ID);
             loadEntry(entryID, entryManager);
-        } else {
+        } else
+        {
             entryID = INVALID_ID;
         }
 
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.edit_entry_menu, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item)
+    {
+        switch (item.getItemId())
+        {
             case R.id.action_save:
                 saveEntry(entryManager);
                 finish();
@@ -90,9 +99,11 @@ public class EditEntryActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadEntry(int id, EntryManager manager) {
+    private void loadEntry(int id, EntryManager manager)
+    {
         Entry entry = manager.getEntryByID(id);
-        if (entry != null) {
+        if (entry != null)
+        {
             journalText.setText(entry.getBody());
         }
         // call this in OnCreate()
@@ -102,14 +113,26 @@ public class EditEntryActivity extends AppCompatActivity {
 //        journalText.setText(text);
     }
 
-    private void saveEntry(EntryManager manager) {
+    private void saveEntry(EntryManager manager)
+    {
 //        https://stackoverflow.com/questions/18056814/how-can-i-capture-the-formatting-of-my-edittext-text-so-that-bold-words-show-as
         Time currentTime = new Time(Calendar.getInstance().getTime().getTime());
         String plainText = journalText.getText().toString();
-
         Entry entry = manager.getEntryByID(entryID);
+
+        if (moodMap != null)
+        {
+            Log.d("yathavan", moodMap.getLastKnownLocation().toString());
+        }
+
         if (entry == null) {
-            entry = new Entry(plainText, currentTime.getTime());
+//            try {
+//                entry = new Entry(plainText, currentTime.getTime(), location.getLatitude(), location.getLongitude());
+//            } catch (Exception e) {
+//                Log.d("yathavan", "exception with getting location: " + e.getMessage());
+                entry = new Entry(plainText, currentTime.getTime());
+//            }
+
             manager.addEntry(entry);
         } else {
             entry.setBody(plainText);
