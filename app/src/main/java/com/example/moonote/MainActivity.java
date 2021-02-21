@@ -132,7 +132,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseChangedRe
     }
 
     public void launchReports(View view) {
-        // run when pressing reports button
+        Intent intent = new Intent(this, SentimentBarGraphActivity.class);
+        startActivity(intent);
     }
 
     public void launchEntries(View view) {
