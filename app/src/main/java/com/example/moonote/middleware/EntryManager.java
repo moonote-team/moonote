@@ -65,6 +65,8 @@ public class EntryManager {
         ContentValues newEntry = new ContentValues();
         newEntry.put(DatabaseHelper.Entry.BODY, entry.getBody());
         newEntry.put(DatabaseHelper.Entry.DATE, entry.getDate());
+        newEntry.put(DatabaseHelper.Entry.LATITUDE, entry.getLatitude());
+        newEntry.put(DatabaseHelper.Entry.LONGITUDE, entry.getLongitude());
         newEntry.put(DatabaseHelper.Entry.SENTIMENT, entry.getSentiment());
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
@@ -93,6 +95,13 @@ public class EntryManager {
         Entry entry = null;
 
         if (cursor.moveToFirst()) {
+            entry = new Entry(
+                    cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
+                    (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE),
+                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID)),
+                    cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Entry.LATITUDE)),
+                    cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Entry.LONGITUDE))
+            );
             entry = getEntryFromCursorPosition(cursor);
         }
 
