@@ -26,7 +26,6 @@ import java.util.Locale;
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecyclerViewAdapter.ViewHolder> {
-
     private final List<Entry> mValues;
     private OnViewEntryListener onViewEntryListener;
     private Context context;
