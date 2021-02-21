@@ -19,15 +19,30 @@
     <Spinner
         android:id="@+id/month_spinner"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="8" />
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center|top"
+        android:spinnerMode="dialog"/>
 
 
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/sentiment_bargraph"
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="200dp"
+        android:layout_margin="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="5dp"
+        android:id="@+id/cardview">
 
-    </com.github.mikephil.charting.charts.BarChart>
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/sentiment_bargraph"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+        </com.github.mikephil.charting.charts.BarChart>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
 </LinearLayout>

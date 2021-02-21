@@ -47,9 +47,6 @@ public class SentimentBarGraphActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //This runs on spinner init, as well as selecting items
                 String selectedMonth = adapter.getItem(position);
-
-
-
             }
 
             @Override
@@ -90,9 +87,9 @@ public class SentimentBarGraphActivity extends AppCompatActivity {
 
     }
 
-    private long getEpochFromMonth() {
-
-    }
+//    private long getEpochFromMonth() {
+//
+//    }
 
     private void initDataset() {
 
