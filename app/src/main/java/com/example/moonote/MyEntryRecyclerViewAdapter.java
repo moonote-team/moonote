@@ -68,15 +68,15 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
         }
 
         String mood;
-        if (sentiment >= 8.0) mood = "Excellent";
-        else if (sentiment >= 6.0) mood = "Great";
-        else if (sentiment >= 3.0) mood = "Good";
-        else if (sentiment >= 1.5) mood = "Decent";
-        else if (sentiment >= -1.5) mood = "Average";
-        else if (sentiment >= -3.0) mood = "Grumpy";
-        else if (sentiment >= -6.0) mood = "Bad";
-        else if (sentiment >= -8.0) mood = "Terrible";
-        else if (sentiment >= -10.0) mood = "Very Worrysome";
+        if (sentiment >= .8) mood = "Excellent";
+        else if (sentiment >= .6) mood = "Great";
+        else if (sentiment >= .3) mood = "Good";
+        else if (sentiment >= .15) mood = "Decent";
+        else if (sentiment >= -.15) mood = "Average";
+        else if (sentiment >= -.3) mood = "Mediocre";
+        else if (sentiment >= -.6) mood = "Bad";
+        else if (sentiment >= -.8) mood = "Terrible";
+        else if (sentiment >= -1.0) mood = "Very Worrysome";
         else mood = "Undefined";
         holder.txtSentiment.append(" (" + mood + ")");
 
