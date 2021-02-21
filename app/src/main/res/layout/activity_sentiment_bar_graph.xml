@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".EditEntryActivity">
+
+
+    <!--    <com.google.android.material.appbar.AppBarLayout-->
+    <!--        android:id="@+id/bargraph_appbar"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:theme="@style/Theme.MooNote.AppBarOverlay">-->
+
+
+    <!--    </com.google.android.material.appbar.AVppBarLayout>-->
+
+    <Spinner
+        android:id="@+id/month_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center|top"
+        android:spinnerMode="dialog"/>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="15dp"
+        android:id="@+id/cardview">
+
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/sentiment_bargraph"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+        </com.github.mikephil.charting.charts.BarChart>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</LinearLayout>
