@@ -3,7 +3,6 @@ package com.example.moonote;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -116,9 +115,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseChangedRe
         entries.setAdapter(results);
     }
 
-    public void launchCalendarView(View view) {
-        Log.i("RUNNING", "CALENDAR VIEW");
-    }
 
     @Override
     public void onDatabaseChange() {
@@ -129,5 +125,21 @@ public class MainActivity extends AppCompatActivity implements DatabaseChangedRe
         int month = Integer.parseInt(splitSelectedDate[1]) - 1;
         int year = Integer.parseInt(splitSelectedDate[2]);
         updateCurrentEntries(year, month, day);
+    }
+
+    public void launchCalendar(View view) {
+        // run when pressing calendar button
+    }
+
+    public void launchReports(View view) {
+        // run when pressing reports button
+    }
+
+    public void launchEntries(View view) {
+        // run when pressing entries button
+    }
+
+    public void launchStats(View view) {
+        //run when pressing stats button
     }
 }
