@@ -65,8 +65,6 @@ public class EntryManager {
         ContentValues newEntry = new ContentValues();
         newEntry.put(DatabaseHelper.Entry.BODY, entry.getBody());
         newEntry.put(DatabaseHelper.Entry.DATE, entry.getDate());
-        newEntry.put(DatabaseHelper.Entry.LATITUDE, entry.getLatitude());
-        newEntry.put(DatabaseHelper.Entry.LONGITUDE, entry.getLongitude());
         newEntry.put(DatabaseHelper.Entry.SENTIMENT, entry.getSentiment());
         newEntry.put(DatabaseHelper.Entry.LATITUDE, entry.getLatitude());
         newEntry.put(DatabaseHelper.Entry.LONGITUDE, entry.getLongitude());
@@ -113,13 +111,15 @@ public class EntryManager {
     }
 
     public Entry getEntryFromCursorPosition(Cursor cursor) {
-        return new Entry(
+        Entry entry = new Entry(
                 cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
                 cursor.getLong(cursor.getColumnIndex(DatabaseHelper.Entry.DATE)),
                 cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID)),
                 cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Entry.SENTIMENT))
-                cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Entry.LATITUDE)),
-                cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Entry.LONGITUDE))
         );
+        cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Entry.LATITUDE));
+        cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Entry.LONGITUDE));
+
+        return entry;
     }
 }

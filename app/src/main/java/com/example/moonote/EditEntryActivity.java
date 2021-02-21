@@ -73,7 +73,8 @@ public class EditEntryActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(EditEntryActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
                             Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
-            return;
+        } else {
+            locationGranted = true;
         }
 
         // Location service
@@ -152,7 +153,7 @@ public class EditEntryActivity extends AppCompatActivity {
                     Log.i("SCORE FROM ADDING", String.valueOf(score));
                     finalEntry.setSentiment(score);
 
-                    if (isLocationEnabled(EditEntryActivity.this) && locationGranted) {
+                    if (locationGranted) {
                         fusedLocationClient.getLastLocation()
                                 .addOnSuccessListener(EditEntryActivity.this, new OnSuccessListener<Location>() {
                                     @Override
