@@ -29,15 +29,11 @@ public class EntryManager {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery(query, null);
         List<Entry> entries = new ArrayList<>();
+        Entry entry;
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                Entry entry = new Entry(
-                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
-                        (long) cursor.getLong(cursor.getColumnIndex(DatabaseHelper.Entry.DATE)),
-                        (int) cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID)),
-                        cursor.getFloat(cursor.getColumnIndex(DatabaseHelper.Entry.SENTIMENT))
-                );
+                entry = getEntryFromCursorPosition(cursor);
                 entries.add(entry);
                 cursor.moveToNext();
             }
@@ -51,15 +47,11 @@ public class EntryManager {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery("SELECT * FROM " + DatabaseHelper.Entry.TABLE_NAME, null);
         List<Entry> entries = new ArrayList<>();
+        Entry entry;
 
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
-                Entry entry = new Entry(
-                        cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
-                        (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE),
-                        cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID)),
-                        cursor.getFloat(cursor.getColumnIndex(DatabaseHelper.Entry.SENTIMENT))
-                );
+                entry = getEntryFromCursorPosition(cursor);
                 entries.add(entry);
                 cursor.moveToNext();
             }
@@ -101,12 +93,7 @@ public class EntryManager {
         Entry entry = null;
 
         if (cursor.moveToFirst()) {
-            entry = new Entry(
-                    cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
-                    (long) cursor.getColumnIndex(DatabaseHelper.Entry.DATE),
-                    cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID)),
-                    cursor.getFloat(cursor.getColumnIndex(DatabaseHelper.Entry.SENTIMENT))
-            );
+            entry = getEntryFromCursorPosition(cursor);
         }
 
         cursor.close();
@@ -117,5 +104,14 @@ public class EntryManager {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
 //        database.rawQuery("DELETE FROM " + DatabaseHelper.Entry.TABLE_NAME + " WHERE " + DatabaseHelper.Entry.ID + " = " + id, null);
         database.delete(DatabaseHelper.Entry.TABLE_NAME, DatabaseHelper.Entry.ID + " = " + id, null);
+    }
+
+    public Entry getEntryFromCursorPosition(Cursor cursor) {
+        return new Entry(
+                cursor.getString(cursor.getColumnIndex(DatabaseHelper.Entry.BODY)),
+                cursor.getLong(cursor.getColumnIndex(DatabaseHelper.Entry.DATE)),
+                cursor.getInt(cursor.getColumnIndex(DatabaseHelper.Entry.ID)),
+                cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.Entry.SENTIMENT))
+        );
     }
 }
