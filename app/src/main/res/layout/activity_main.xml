@@ -25,6 +25,7 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/appbar"
         android:layout_alignRight="@id/appbar"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
@@ -36,8 +37,7 @@
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginBottom="@dimen/fab_margin"
         android:contentDescription="@string/add_entry"
-        app:srcCompat="@android:drawable/ic_input_add"
-        android:layout_alignEnd="@id/appbar" />
+        app:srcCompat="@drawable/ic_add_button" />
 
     <CalendarView
         android:id="@+id/calendarView"
