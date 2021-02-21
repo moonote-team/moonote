@@ -2,6 +2,7 @@ package com.example.moonote;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -100,5 +101,9 @@ public class MainActivity extends AppCompatActivity {
                 DatabaseHelper.Entry.DATE + " BETWEEN " + epochStart + " AND " + epochEnd);
 
         entries.setAdapter(results);
+    }
+
+    public void launchCalendarView(View view) {
+        Log.i("RUNNING", "CALENDAR VIEW");
     }
 }
