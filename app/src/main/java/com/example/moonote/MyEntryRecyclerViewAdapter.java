@@ -50,11 +50,12 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
         String time = simpleDateFormat.format(date);
         Double sentiment = mValues.get(position).getSentiment();
+        String approxSentiment = String.format("%.3f", sentiment);
 
         holder.mItem = mValues.get(position);
         holder.txtDateTime.setText(time);
 //        holder.txtEntryPreview.setText(mValues.get(position).getBody());
-        holder.txtSentiment.setText(sentiment.toString());
+        holder.txtSentiment.setText(approxSentiment);
 
         int textColor;
         if (sentiment > 0.0) {
