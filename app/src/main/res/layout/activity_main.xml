@@ -25,18 +25,35 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/bottom_nav"
+        android:layout_alignBottom="@id/mapfab"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toStartOf="@+id/mapfab"
+        android:layout_toLeftOf="@+id/mapfab"
+        android:contentDescription="@string/add_entry"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/mapfab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/appbar"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="bottom|end"
         android:layout_marginStart="@dimen/fab_margin"
         android:layout_marginLeft="@dimen/fab_margin"
         android:layout_marginTop="@dimen/fab_margin"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
-        android:layout_marginBottom="@dimen/fab_bottom"
+        android:layout_marginBottom="@dimen/fab_margin"
         android:contentDescription="@string/add_entry"
-        app:srcCompat="@drawable/ic_add_button" />
+        app:srcCompat="@android:drawable/ic_dialog_map"
+        android:layout_alignEnd="@id/appbar" />
 
     <CalendarView
         android:id="@+id/calendarView"
