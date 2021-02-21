@@ -22,6 +22,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private EntryManager entryManager;
     private EntryFragment entries;
+   
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

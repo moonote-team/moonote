@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -110,10 +109,30 @@ public class EditEntryActivity extends AppCompatActivity {
         Entry entry = manager.getEntryByID(entryID);
         if (entry == null) {
             entry = new Entry(plainText, currentTime.getTime());
-            manager.addEntry(entry);
+            Entry finalEntry = entry;
+            executor.submit(new Runnable() {
+                @Override
+                public void run() {
+                    Sentiment sentiment = makeAnnotateRequest(plainText);
+                    float score = sentiment.getScore();
+                    Log.i("SCORE FROM ADDING", String.valueOf(score));
+                    finalEntry.setSentiment(score);
+                    manager.addEntry(finalEntry);
+                }
+            });
         } else {
             entry.setBody(plainText);
-            manager.updateItem(entry);
+            Entry finalizedEntry = entry;
+            executor.submit(new Runnable() {
+                @Override
+                public void run() {
+                    Sentiment sentiment = makeAnnotateRequest(plainText);
+                    float score = sentiment.getScore();
+                    Log.i("SCORE FROM UPDATE", String.valueOf(score));
+                    finalizedEntry.setSentiment(score);
+                    manager.updateItem(finalizedEntry);
+                }
+            });
         }
     }
 
