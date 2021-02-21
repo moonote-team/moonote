@@ -58,12 +58,6 @@ public class MainActivity extends AppCompatActivity implements DatabaseChangedRe
             startActivity(intent);
         });
 
-        FloatingActionButton mapfab = findViewById(R.id.mapfab);
-        mapfab.setOnClickListener(view -> {
-            Intent intent = new Intent(this, MapActivity.class);
-            startActivity(intent);
-        });
-
         calendarView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View view) {
