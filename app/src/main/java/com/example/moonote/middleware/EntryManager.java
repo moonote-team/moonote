@@ -68,6 +68,8 @@ public class EntryManager {
         newEntry.put(DatabaseHelper.Entry.LATITUDE, entry.getLatitude());
         newEntry.put(DatabaseHelper.Entry.LONGITUDE, entry.getLongitude());
         newEntry.put(DatabaseHelper.Entry.SENTIMENT, entry.getSentiment());
+        newEntry.put(DatabaseHelper.Entry.LATITUDE, entry.getLatitude());
+        newEntry.put(DatabaseHelper.Entry.LONGITUDE, entry.getLongitude());
 
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
         database.insert(DatabaseHelper.Entry.TABLE_NAME, null, newEntry);

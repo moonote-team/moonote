@@ -1,8 +1,6 @@
 package com.example.moonote;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.moonote.Journal.Entry;
-import com.example.moonote.mapstuff.MoodMap;
 import com.example.moonote.middleware.EntryManager;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -141,6 +138,13 @@ public class EditEntryActivity extends AppCompatActivity
                     sendBroadcast(dbChange);
                 }
             });
+//            try {
+//                entry = new Entry(plainText, currentTime.getTime(), location.getLatitude(), location.getLongitude());
+//            } catch (Exception e) {
+//                Log.d("yathavan", "exception with getting location: " + e.getMessage());
+                entry = new Entry(plainText, currentTime.getTime());
+//            }
+
 //            try {
 //                entry = new Entry(plainText, currentTime.getTime(), location.getLatitude(), location.getLongitude());
 //            } catch (Exception e) {

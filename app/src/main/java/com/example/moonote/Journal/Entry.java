@@ -58,6 +58,23 @@ public class Entry {
         this.longitude = longitude;
     }
 
+    public Entry(String body, Long date, Double latitude, Double longitude)
+    {
+        this.body = body;
+        this.date = date;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public Entry(String body, Long date, int _id, Double latitude, Double longitude)
+    {
+        this.body = body;
+        this.date = date;
+        this._id = _id;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     public int get_id() {
         return _id;
     }
@@ -90,5 +107,15 @@ public class Entry {
 
     public void setSentiment(Double sentiment) {
         this.sentiment = sentiment;
+    }
+
+    public double getLatitude()
+    {
+        return latitude;
+    }
+
+    public double getLongitude()
+    {
+        return longitude;
     }
 }
