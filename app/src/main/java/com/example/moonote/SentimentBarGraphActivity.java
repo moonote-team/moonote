@@ -2,7 +2,10 @@ package com.example.moonote;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,14 +19,15 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SentimentBarGraphActivity extends AppCompatActivity {
     BarChart barChart;
     private EntryManager manager;
-    private TextView negativeText, neutralText, positiveText;
     private int negativePercent, neutralPercent, positivePercent;
+    private Spinner monthSelector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,30 @@ public class SentimentBarGraphActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sentiment_bar_graph);
         barChart = findViewById(R.id.sentiment_bargraph);
         manager = new EntryManager(this);
+        monthSelector = findViewById(R.id.month_spinner);
+        monthSelector.setSelection(2);
+        String[] months = new DateFormatSymbols().getMonths();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.month_spinner_item, months);
+        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        monthSelector.setAdapter(adapter);
+        monthSelector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                //This runs on spinner init, as well as selecting items
+                String selectedMonth = adapter.getItem(position);
+
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
         initDataset();
         initBarChart();
         showBarChart();
@@ -59,6 +87,10 @@ public class SentimentBarGraphActivity extends AppCompatActivity {
         String[] labels = {"Negative Entries:" + negativePercent + "%", "Neutral Entries:" + neutralPercent + "%", "Positive Entries:" + positivePercent + "%"};
         xAxis.setValueFormatter(new IndexAxisValueFormatter(labels));
         barChart.getLegend().setEnabled(false);
+
+    }
+
+    private long getEpochFromMonth() {
 
     }
 
