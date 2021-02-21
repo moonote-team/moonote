@@ -71,7 +71,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginRight="68dp"
         android:layout_marginBottom="@dimen/nav_bar_btn_vert"
-        android:background="@drawable/ic_report_button" />
+        android:background="@drawable/ic_report_button"
+        android:onClick="launchReports" />
 
     <ImageView
         android:id="@+id/report_label"
@@ -91,7 +92,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="68dp"
         android:layout_marginBottom="@dimen/nav_bar_btn_vert"
-        android:background="@drawable/ic_entries_button" />
+        android:background="@drawable/ic_entries_button"
+        android:onClick="launchEntries" />
 
     <ImageView
         android:id="@+id/entries_label"
@@ -111,7 +113,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="@dimen/nav_bar_btn_horiz"
         android:layout_marginBottom="@dimen/nav_bar_btn_vert"
-        android:background="@drawable/ic_stats_button" />
+        android:background="@drawable/ic_stats_button"
+        android:onClick="launchStats" />
 
     <ImageView
         android:id="@+id/stats_label"
@@ -132,7 +135,7 @@
         android:layout_marginRight="@dimen/nav_bar_btn_horiz"
         android:layout_marginBottom="@dimen/nav_bar_btn_vert"
         android:background="@drawable/ic_calendar_button"
-        android:onClick="launchCalendarView" />
+        android:onClick="launchCalendar" />
 
     <ImageView
         android:id="@+id/calendar_label"
