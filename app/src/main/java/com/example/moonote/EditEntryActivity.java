@@ -114,7 +114,7 @@ public class EditEntryActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     Sentiment sentiment = makeAnnotateRequest(plainText);
-                    float score = sentiment.getScore();
+                    double score = sentiment.getScore();
                     Log.i("SCORE FROM ADDING", String.valueOf(score));
                     finalEntry.setSentiment(score);
                     manager.addEntry(finalEntry);
@@ -127,7 +127,7 @@ public class EditEntryActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     Sentiment sentiment = makeAnnotateRequest(plainText);
-                    float score = sentiment.getScore();
+                    double score = sentiment.getScore();
                     Log.i("SCORE FROM UPDATE", String.valueOf(score));
                     finalizedEntry.setSentiment(score);
                     manager.updateItem(finalizedEntry);

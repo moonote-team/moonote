@@ -11,14 +11,14 @@ public class Entry {
     private int _id;
     private String body;
     private Long date;
-    private float sentiment;
-    private double latitude, longitude;
+    private Double sentiment;
+    private Double latitude, longitude;
 
     public Entry() {
         _id = 1;
         body = "";
         date = 0L;
-        sentiment = 0.0f;
+        sentiment = 0.0d;
         latitude = 0.0;
         longitude = 0.0;
     }
@@ -34,7 +34,7 @@ public class Entry {
         this._id = _id;
     }
 
-    public Entry(String body, Long date, int _id, Float sentiment) {
+    public Entry(String body, Long date, int _id, Double sentiment) {
         this.body = body;
         this.date = date;
         this._id = _id;
@@ -57,11 +57,11 @@ public class Entry {
         return date;
     }
 
-    public Float getSentiment() {
+    public Double getSentiment() {
         return sentiment;
     }
 
-    public void setSentiment(float sentiment) {
+    public void setSentiment(Double sentiment) {
         this.sentiment = sentiment;
     }
 }
