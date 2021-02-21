@@ -8,4 +8,6 @@
     <!-- Strings used for fragments for navigation -->
 
     <string name="journal_text_hint">Enter your text</string>
+
+    <string name="api_key">AIzaSyBE42QF6DRoW-Alk-d23Gv50sAgm4ZPUHE</string>
 </resources>

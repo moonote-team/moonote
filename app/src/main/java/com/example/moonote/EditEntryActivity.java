@@ -6,7 +6,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,9 +13,21 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.moonote.Journal.Entry;
 import com.example.moonote.middleware.EntryManager;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.google.api.services.language.v1.CloudNaturalLanguage;
+import com.google.api.services.language.v1.CloudNaturalLanguageRequestInitializer;
+import com.google.api.services.language.v1.model.AnnotateTextRequest;
+import com.google.api.services.language.v1.model.AnnotateTextResponse;
+import com.google.api.services.language.v1.model.Document;
+import com.google.api.services.language.v1.model.Features;
+import com.google.api.services.language.v1.model.Sentiment;
 
+import java.io.IOException;
 import java.sql.Time;
 import java.util.Calendar;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 
 public class EditEntryActivity extends AppCompatActivity {
@@ -27,6 +38,10 @@ public class EditEntryActivity extends AppCompatActivity {
     private EntryManager entryManager;
     private int entryID;
 
+    private CloudNaturalLanguage naturalLanguageService;
+    private String apiKey;
+    private ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +51,14 @@ public class EditEntryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         journalText = findViewById(R.id.journal_text);
         entryManager = new EntryManager(this);
+        apiKey = getResources().getString(R.string.api_key);
+        naturalLanguageService = new CloudNaturalLanguage.Builder(
+                AndroidHttp.newCompatibleTransport(),
+                new AndroidJsonFactory(),
+                null
+        ).setCloudNaturalLanguageRequestInitializer(
+                new CloudNaturalLanguageRequestInitializer(apiKey)
+        ).build();
         // Assume you get passed the times
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -58,9 +81,8 @@ public class EditEntryActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                Log.i("MENU ITEM", "ACTION BUTTON");
-                Toast.makeText(this, "RUNNING SAVE", Toast.LENGTH_SHORT).show();
                 saveEntry(entryManager);
+                finish();
                 return true;
             case R.id.action_settings:
                 return true;
@@ -88,15 +110,60 @@ public class EditEntryActivity extends AppCompatActivity {
         Entry entry = manager.getEntryByID(entryID);
         if (entry == null) {
             entry = new Entry(plainText, currentTime.getTime());
-            manager.addEntry(entry);
-            Log.i("ADDING ENTRY", String.format("entryID: %d, text: %s, epoch, %d", entry.get_id(), entry.getBody(), entry.getDate()));
+            Entry finalEntry = entry;
+            executor.submit(new Runnable() {
+                @Override
+                public void run() {
+                    Sentiment sentiment = makeAnnotateRequest(plainText);
+                    double score = sentiment.getScore();
+                    Log.i("SCORE FROM ADDING", String.valueOf(score));
+                    finalEntry.setSentiment(score);
+                    manager.addEntry(finalEntry);
+                }
+            });
         } else {
             entry.setBody(plainText);
-            manager.updateItem(entry);
-            Log.i("UPDATING ENTRY ENTRY", String.format("New Entry value: entryID: %d, text: %s, epoch, %d", entry.get_id(), entry.getBody(), entry.getDate()));
+            Entry finalizedEntry = entry;
+            executor.submit(new Runnable() {
+                @Override
+                public void run() {
+                    Sentiment sentiment = makeAnnotateRequest(plainText);
+                    double score = sentiment.getScore();
+                    Log.i("SCORE FROM UPDATE", String.valueOf(score));
+                    finalizedEntry.setSentiment(score);
+                    manager.updateItem(finalizedEntry);
+                }
+            });
         }
-        Log.i("SAVING", "SAVING ENTRY");
+    }
 
+    public Sentiment makeAnnotateRequest(String plainText) {
+        Document document = new Document();
+        document.setType("PLAIN_TEXT");
+        document.setLanguage("en-US");
+        document.setContent(plainText);
 
+        Features features = new Features();
+        features.setExtractEntities(true);
+        features.setExtractDocumentSentiment(true);
+        features.setExtractSyntax(true);
+
+        AnnotateTextRequest request = new AnnotateTextRequest();
+        request.setDocument(document);
+        request.setFeatures(features);
+
+        AnnotateTextResponse response = null;
+        try {
+            response = naturalLanguageService.documents().annotateText(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (response != null) {
+            Sentiment sent = response.getDocumentSentiment();
+            return sent;
+        }
+
+        return null;
     }
 }
