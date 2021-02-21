@@ -50,8 +50,9 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
         Date date = calendar.getTime();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
         String time = simpleDateFormat.format(date);
-        Double sentiment = mValues.get(position).getSentiment();
-        String approxSentiment = String.format(Locale.getDefault(), "%.3f", sentiment);
+        Double sentiment = mValues.get(position).getSentiment() * 100;
+        String approxSentiment = String.format(Locale.getDefault(), "%.0f%%",
+                Math.abs(sentiment));
 
         holder.mItem = mValues.get(position);
         holder.txtDateTime.setText(time);
@@ -59,24 +60,24 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
         holder.txtSentiment.setText(approxSentiment);
 
         int textColor;
-        if (sentiment > 0.0) {
+        if (sentiment > 10.0) {
             textColor = Color.GREEN;
-        } else if (sentiment < 0.0) {
+        } else if (sentiment < -10.0) {
             textColor = Color.RED;
         } else {
             textColor = Color.BLACK;
         }
 
         String mood;
-        if (sentiment >= .8) mood = "Excellent";
-        else if (sentiment >= .6) mood = "Great";
-        else if (sentiment >= .3) mood = "Good";
-        else if (sentiment >= .15) mood = "Decent";
-        else if (sentiment >= -.15) mood = "Average";
-        else if (sentiment >= -.3) mood = "Mediocre";
-        else if (sentiment >= -.6) mood = "Bad";
-        else if (sentiment >= -.8) mood = "Terrible";
-        else if (sentiment >= -1.0) mood = "Very Worrysome";
+        if (sentiment >= 80) mood = "Excellent";
+        else if (sentiment >= 60) mood = "Great";
+        else if (sentiment >= 30) mood = "Good";
+        else if (sentiment >= 15) mood = "Decent";
+        else if (sentiment >= -15) mood = "Average";
+        else if (sentiment >= -30) mood = "Mediocre";
+        else if (sentiment >= -60) mood = "Bad";
+        else if (sentiment >= -80) mood = "Terrible";
+        else if (sentiment >= -100) mood = "Very Worrysome";
         else mood = "Undefined";
         holder.txtSentiment.append(" (" + mood + ")");
 
