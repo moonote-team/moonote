@@ -1,6 +1,8 @@
 package com.example.moonote;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -11,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.moonote.Journal.Entry;
+import com.example.moonote.mapstuff.MoodMap;
 import com.example.moonote.middleware.EntryManager;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
@@ -117,11 +120,6 @@ public class EditEntryActivity extends AppCompatActivity
         Time currentTime = new Time(Calendar.getInstance().getTime().getTime());
         String plainText = journalText.getText().toString();
         Entry entry = manager.getEntryByID(entryID);
-
-        if (moodMap != null)
-        {
-            Log.d("yathavan", moodMap.getLastKnownLocation().toString());
-        }
 
         if (entry == null) {
             entry = new Entry(plainText, currentTime.getTime());
