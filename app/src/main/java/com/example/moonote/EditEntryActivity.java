@@ -1,7 +1,15 @@
 package com.example.moonote;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,10 +19,14 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 import com.example.moonote.Journal.Entry;
-import com.example.moonote.mapstuff.MoodMap;
+//import com.example.moonote.mapstuff.MoodMap;
 import com.example.moonote.middleware.EntryManager;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.extensions.android.json.AndroidJsonFactory;
 import com.google.api.services.language.v1.CloudNaturalLanguage;
@@ -32,26 +44,41 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 
-public class EditEntryActivity extends AppCompatActivity
-{
+public class EditEntryActivity extends AppCompatActivity {
     public static final String KEY_ENTRY_ID = "com.example.moonote.KEY_ENTRY_ID";
     private final int INVALID_ID = -1;
     private EditText journalText;
     private EntryManager entryManager;
     private int entryID;
 
+    private FusedLocationProviderClient fusedLocationClient;
     private CloudNaturalLanguage naturalLanguageService;
     private String apiKey;
     private ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(3);
 
-    private MoodMap moodMap = new MoodMap();
+    // For granting permissions on location
+    private final int LOCATION_REQUEST_CODE = 123;
+    private boolean locationGranted = false;
+
+//    private MoodMap moodMap = new MoodMap();
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_entry);
+
+        // Permissions (can be denied)
+        if (ActivityCompat.checkSelfPermission(EditEntryActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(EditEntryActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_REQUEST_CODE);
+            return;
+        }
+
+        // Location service
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         journalText = findViewById(R.id.journal_text);
@@ -66,30 +93,25 @@ public class EditEntryActivity extends AppCompatActivity
         ).build();
         // Assume you get passed the times
         Bundle extras = getIntent().getExtras();
-        if (extras != null)
-        {
+        if (extras != null) {
             entryID = extras.getInt(KEY_ENTRY_ID);
             loadEntry(entryID, entryManager);
-        } else
-        {
+        } else {
             entryID = INVALID_ID;
         }
 
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.edit_entry_menu, menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.action_save:
                 saveEntry(entryManager);
                 finish();
@@ -100,11 +122,9 @@ public class EditEntryActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadEntry(int id, EntryManager manager)
-    {
+    private void loadEntry(int id, EntryManager manager) {
         Entry entry = manager.getEntryByID(id);
-        if (entry != null)
-        {
+        if (entry != null) {
             journalText.setText(entry.getBody());
         }
         // call this in OnCreate()
@@ -114,8 +134,7 @@ public class EditEntryActivity extends AppCompatActivity
 //        journalText.setText(text);
     }
 
-    private void saveEntry(EntryManager manager)
-    {
+    private void saveEntry(EntryManager manager) {
 //        https://stackoverflow.com/questions/18056814/how-can-i-capture-the-formatting-of-my-edittext-text-so-that-bold-words-show-as
         Time currentTime = new Time(Calendar.getInstance().getTime().getTime());
         String plainText = journalText.getText().toString();
@@ -125,12 +144,30 @@ public class EditEntryActivity extends AppCompatActivity
             entry = new Entry(plainText, currentTime.getTime());
             Entry finalEntry = entry;
             executor.submit(new Runnable() {
+                @SuppressLint("MissingPermission")
                 @Override
                 public void run() {
                     Sentiment sentiment = makeAnnotateRequest(plainText);
                     double score = sentiment.getScore();
                     Log.i("SCORE FROM ADDING", String.valueOf(score));
                     finalEntry.setSentiment(score);
+
+                    if (isLocationEnabled(EditEntryActivity.this) && locationGranted) {
+                        fusedLocationClient.getLastLocation()
+                                .addOnSuccessListener(EditEntryActivity.this, new OnSuccessListener<Location>() {
+                                    @Override
+                                    public void onSuccess(Location location) {
+                                        // Got last known location. In some rare situations this can be null.
+                                        if (location != null) {
+                                            finalEntry.setLatitude(location.getLatitude());
+                                            finalEntry.setLongitude(location.getLongitude());
+                                            manager.updateItem(finalEntry);
+                                            Intent dbChange = new Intent(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
+                                            sendBroadcast(dbChange);
+                                        }
+                                    }
+                                });
+                    }
                     manager.addEntry(finalEntry);
                     Intent dbChange = new Intent(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
                     sendBroadcast(dbChange);
@@ -190,5 +227,39 @@ public class EditEntryActivity extends AppCompatActivity
         }
 
         return null;
+    }
+
+    public static boolean canGetLocation(Context context) {
+        return isLocationEnabled(context); // application context
+    }
+
+    public static boolean isLocationEnabled(Context context) {
+        int locationMode = 0;
+        String locationProviders;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+        } else {
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+            return !TextUtils.isEmpty(locationProviders);
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == LOCATION_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED ||
+                    grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                locationGranted = true;
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
