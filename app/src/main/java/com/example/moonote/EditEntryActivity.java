@@ -143,13 +143,6 @@ public class EditEntryActivity extends AppCompatActivity
                 entry = new Entry(plainText, currentTime.getTime());
 //            }
 
-//            try {
-//                entry = new Entry(plainText, currentTime.getTime(), location.getLatitude(), location.getLongitude());
-//            } catch (Exception e) {
-//                Log.d("yathavan", "exception with getting location: " + e.getMessage());
-                entry = new Entry(plainText, currentTime.getTime());
-//            }
-
             manager.addEntry(entry);
         } else {
             entry.setBody(plainText);
