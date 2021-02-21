@@ -1,6 +1,8 @@
 package com.example.moonote;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +27,12 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
 
     private final List<Entry> mValues;
     private OnViewEntryListener onViewEntryListener;
+    private Context context;
 
-    public MyEntryRecyclerViewAdapter(List<Entry> items, OnViewEntryListener onViewEntryListener) {
+    public MyEntryRecyclerViewAdapter(List<Entry> items, OnViewEntryListener onViewEntryListener, Context context) {
         this.onViewEntryListener = onViewEntryListener;
         mValues = items;
+        this.context = context;
     }
 
     @NonNull
@@ -68,6 +72,10 @@ public class MyEntryRecyclerViewAdapter extends RecyclerView.Adapter<MyEntryRecy
                 // delete entry
                 EntryManager entryManager = new EntryManager(view.getContext());
                 entryManager.deleteEntry(mValues.get(position).get_id());
+                Intent dbChange = new Intent(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
+                context.sendBroadcast(dbChange);
+
+
             });
             builder.setPositiveButton("Nah", (dialogInterface, i) ->
             {

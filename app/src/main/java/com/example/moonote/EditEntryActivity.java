@@ -1,5 +1,6 @@
 package com.example.moonote;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -32,7 +33,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class EditEntryActivity extends AppCompatActivity {
     public static final String KEY_ENTRY_ID = "com.example.moonote.KEY_ENTRY_ID";
-    public static final int EDIT_ENTRY_REQUEST_CODE = 2;
     private final int INVALID_ID = -1;
     private EditText journalText;
     private EntryManager entryManager;
@@ -119,6 +119,8 @@ public class EditEntryActivity extends AppCompatActivity {
                     Log.i("SCORE FROM ADDING", String.valueOf(score));
                     finalEntry.setSentiment(score);
                     manager.addEntry(finalEntry);
+                    Intent dbChange = new Intent(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
+                    sendBroadcast(dbChange);
                 }
             });
         } else {
@@ -132,6 +134,8 @@ public class EditEntryActivity extends AppCompatActivity {
                     Log.i("SCORE FROM UPDATE", String.valueOf(score));
                     finalizedEntry.setSentiment(score);
                     manager.updateItem(finalizedEntry);
+                    Intent dbChange = new Intent(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
+                    sendBroadcast(dbChange);
                 }
             });
         }
