@@ -4,9 +4,20 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="15dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="15dp"
+        android:id="@+id/cardview">
+
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/piechart"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>

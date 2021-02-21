@@ -36,12 +36,12 @@ public class Pie extends Fragment {
         List<PieEntry> data_entries = new ArrayList<PieEntry>();
 
         for (Entry entry : entries) {
-            data_entries.add(new PieEntry(entry.getDate(), (float) entry.getSentiment()));
+            data_entries.add(new PieEntry((float) entry.getSentiment(), entry.get_id()));
         }
 
         PieDataSet dataSet = new PieDataSet(data_entries, "MoodChart");
 
-        dataSet.setColor(Color.BLUE);
+        dataSet.setColor(Color.rgb(0,66,141));
 
         dataSet.setValueTextColor(Color.WHITE);
 
