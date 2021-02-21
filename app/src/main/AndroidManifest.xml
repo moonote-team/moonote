@@ -24,6 +24,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MooNote">
+        <activity android:name=".ViewPieActivity"></activity>
         <activity android:name=".mapstuff.MapActivity"></activity>
         <activity android:name=".SentimentBarGraphActivity"></activity>
 

@@ -1,6 +1,5 @@
 package com.example.moonote.results;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,30 +21,27 @@ import com.github.mikephil.charting.data.PieEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Pie extends Fragment
-{
-    private final Context myContext = this.getContext();
-    EntryManager entryManager = new EntryManager(myContext);
+public class Pie extends Fragment {
+    EntryManager entryManager;
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
-    {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View pie_chart_view = inflater.inflate(R.layout.results_piechart, container, false);
+        entryManager = new EntryManager(getContext());
 
         PieChart pieChart = pie_chart_view.findViewById(R.id.piechart);
 
         List<Entry> entries = entryManager.getAllEntries();
         List<PieEntry> data_entries = new ArrayList<PieEntry>();
 
-        for (Entry entry : entries)
-        {
-            data_entries.add(new PieEntry(entry.getDate(), (float)entry.getSentiment()));
+        for (Entry entry : entries) {
+            data_entries.add(new PieEntry((float) entry.getSentiment(), entry.get_id()));
         }
 
         PieDataSet dataSet = new PieDataSet(data_entries, "MoodChart");
 
-        dataSet.setColor(Color.BLUE);
+        dataSet.setColors(new int[] {R.color.design_default_color_primary, R.color.design_default_color_on_secondary, R.color.light_tan}, getContext());
 
         dataSet.setValueTextColor(Color.WHITE);
 
