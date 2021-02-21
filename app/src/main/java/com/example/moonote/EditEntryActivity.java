@@ -115,7 +115,6 @@ public class EditEntryActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_save:
                 saveEntry(entryManager);
-                finish();
                 return true;
             case R.id.action_settings:
                 return true;
@@ -165,6 +164,7 @@ public class EditEntryActivity extends AppCompatActivity {
                                             manager.updateItem(finalEntry);
                                             Intent dbChange = new Intent(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
                                             sendBroadcast(dbChange);
+                                            finish();
                                         }
                                     }
                                 });
