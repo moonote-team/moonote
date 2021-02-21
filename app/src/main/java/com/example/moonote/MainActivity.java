@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseChangedRe
         entries.setAdapter(results);
     }
 
+
     @Override
     public void onDatabaseChange() {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -131,5 +132,21 @@ public class MainActivity extends AppCompatActivity implements DatabaseChangedRe
         int month = Integer.parseInt(splitSelectedDate[1]) - 1;
         int year = Integer.parseInt(splitSelectedDate[2]);
         updateCurrentEntries(year, month, day);
+    }
+
+    public void launchCalendar(View view) {
+        // run when pressing calendar button
+    }
+
+    public void launchReports(View view) {
+        // run when pressing reports button
+    }
+
+    public void launchEntries(View view) {
+        // run when pressing entries button
+    }
+
+    public void launchStats(View view) {
+        //run when pressing stats button
     }
 }

@@ -27,7 +27,7 @@
         android:layout_gravity="center"
         android:background="#ffffff"
         android:contentDescription="@string/add"
-        app:srcCompat="@android:drawable/ic_menu_edit" />
+        app:srcCompat="@drawable/ic_edit_entry"  />
 
     <ImageButton
         android:id="@+id/btnDelete"
