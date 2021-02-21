@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseChangedRe
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+
         dbChangeReceiver = new DatabaseChangedReceiver(this);
         IntentFilter filter = new IntentFilter(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
         this.registerReceiver(dbChangeReceiver, filter);
@@ -41,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements DatabaseChangedRe
 
         entryManager = new EntryManager(this);
         entries = (EntryFragment) getSupportFragmentManager().findFragmentById(R.id.entries);
+
 
         calendarView = findViewById(R.id.calendarView);
 
@@ -132,7 +137,8 @@ public class MainActivity extends AppCompatActivity implements DatabaseChangedRe
     }
 
     public void launchReports(View view) {
-        // run when pressing reports button
+        Intent intent = new Intent(this, SentimentBarGraphActivity.class);
+        startActivity(intent);
     }
 
     public void launchEntries(View view) {
